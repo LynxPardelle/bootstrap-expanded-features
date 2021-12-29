@@ -37,11 +37,8 @@ async function cssCreate() {
     } else {
       value = bfeSplited[2];
     }
-    value = value.replace(/per/g, "%");
-    value = value.replace(/__min/g, " -");
-    value = value.replace(/_min/g, "-");
-    value = value.replace(/__/g, " ");
-    value = value.replace(/_/g, ".");
+    value = value.replace("per", "%");
+    value = value.replace("_", ".");
     switch (bfeSplited[1]) {
       case "w":
         bfeStringed += `{width:${value};}`;
@@ -145,10 +142,10 @@ async function cssCreate() {
     ) {
       switch (bfeSplited[1]) {
         case "bg":
-          bfeStringed += `{background-color:${colors[value]} !important;}`;
+          bfeStringed += `{background-color:${colors[value]};}`;
           break;
         case "text":
-          bfeStringed += `{color:${colors[value]} !important;}`;
+          bfeStringed += `{color:${colors[value]};}`;
           break;
         case "border":
           bfeStringed += `{border-color:${colors[value]} !important;}`;
@@ -276,6 +273,7 @@ function createCSSRules(rule) {
   sheet = sheets.pop();
   sheet.insertRule(rule, sheet.cssRules.length);
 }
+
 function HexToRGB(Hex) {
   let HexNoCat = Hex.replace("#", "");
   let rgb =
@@ -294,11 +292,9 @@ function HexToRGB(Hex) {
 }
 function shadeTintColor(rgb, percent) {
   console.log(rgb);
-  var R = rgb[0] === 0 && percent > 0 ? 16 : rgb[0] === 255 && percent < 0 ? 239 : rgb[0];
-  var G = rgb[1] === 0 && percent > 0 ? 16 : rgb[1] === 255 && percent < 0 ? 239 : rgb[1];
-  var B = rgb[2] === 0 && percent > 0 ? 16 : rgb[2] === 255 && percent < 0 ? 239 : rgb[2];
-
-  console.log(R + ' ' + G + ' ' + B)
+  var R = rgb[0] === 0 ? 16 : rgb[0] === 255 ? 250 : rgb[0];
+  var G = rgb[1] === 0 ? 16 : rgb[1] === 255 ? 250 : rgb[1];
+  var B = rgb[2] === 0 ? 16 : rgb[2] === 255 ? 250 : rgb[2];
 
   R = parseInt((R * (100 + percent)) / 100);
   G = parseInt((G * (100 + percent)) / 100);

@@ -37,11 +37,8 @@ async function cssCreate() {
     } else {
       value = bfeSplited[2];
     }
-    value = value.replace(/per/g, "%");
-    value = value.replace(/__min/g, " -");
-    value = value.replace(/_min/g, "-");
-    value = value.replace(/__/g, " ");
-    value = value.replace(/_/g, ".");
+    value = value.replace("per", "%");
+    value = value.replace("_", ".");
     switch (bfeSplited[1]) {
       case "w":
         bfeStringed += `{width:${value};}`;
@@ -145,10 +142,10 @@ async function cssCreate() {
     ) {
       switch (bfeSplited[1]) {
         case "bg":
-          bfeStringed += `{background-color:${colors[value]} !important;}`;
+          bfeStringed += `{background-color:${colors[value]};}`;
           break;
         case "text":
-          bfeStringed += `{color:${colors[value]} !important;}`;
+          bfeStringed += `{color:${colors[value]};}`;
           break;
         case "border":
           bfeStringed += `{border-color:${colors[value]} !important;}`;
@@ -276,6 +273,7 @@ function createCSSRules(rule) {
   sheet = sheets.pop();
   sheet.insertRule(rule, sheet.cssRules.length);
 }
+
 function HexToRGB(Hex) {
   let HexNoCat = Hex.replace("#", "");
   let rgb =

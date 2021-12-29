@@ -37,11 +37,10 @@ async function cssCreate() {
     } else {
       value = bfeSplited[2];
     }
-    value = value.replace(/per/g, "%");
-    value = value.replace(/__min/g, " -");
-    value = value.replace(/_min/g, "-");
-    value = value.replace(/__/g, " ");
-    value = value.replace(/_/g, ".");
+    value = value.replace("per", "%");
+    value = value.replace("___", " -");
+    value = value.replace("__", " ");
+    value = value.replace("_", ".");
     switch (bfeSplited[1]) {
       case "w":
         bfeStringed += `{width:${value};}`;

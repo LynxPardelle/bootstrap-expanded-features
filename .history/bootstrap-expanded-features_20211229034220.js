@@ -37,11 +37,8 @@ async function cssCreate() {
     } else {
       value = bfeSplited[2];
     }
-    value = value.replace(/per/g, "%");
-    value = value.replace(/__min/g, " -");
-    value = value.replace(/_min/g, "-");
-    value = value.replace(/__/g, " ");
-    value = value.replace(/_/g, ".");
+    value = value.replace("per", "%");
+    value = value.replace("_", ".");
     switch (bfeSplited[1]) {
       case "w":
         bfeStringed += `{width:${value};}`;
@@ -145,10 +142,10 @@ async function cssCreate() {
     ) {
       switch (bfeSplited[1]) {
         case "bg":
-          bfeStringed += `{background-color:${colors[value]} !important;}`;
+          bfeStringed += `{background-color:${colors[value]};}`;
           break;
         case "text":
-          bfeStringed += `{color:${colors[value]} !important;}`;
+          bfeStringed += `{color:${colors[value]};}`;
           break;
         case "border":
           bfeStringed += `{border-color:${colors[value]} !important;}`;
@@ -173,41 +170,22 @@ async function cssCreate() {
           break;
         case "btn":
           console.log(colors[value]);
-          console.log(await shadeTintColor(await HexToRGB('0f0'), -25));
+          console.log(await shadeTintColor(await HexToRGB(colors[value]), 1));
+          /* 
+          console.log(await darken(await HexToRGB(colors[value]), 2));
+          console.log(await darken(await HexToRGB(colors[value]), 3));
+          console.log(await darken(await HexToRGB(colors[value]), 4));
+          console.log(await darken(await HexToRGB(colors[value]), 5));
+          console.log(await darken(await HexToRGB(colors[value]), 6));
+          */
 
-          bfeStringed += `{background-color:${colors[value]};border-color:${
-            colors[value]
-          };}
-          /.${bfe}:hover{background-color:${await shadeTintColor(
-            await HexToRGB(colors[value]),
-            -15
-          )};border-color:${await shadeTintColor(
-            await HexToRGB(colors[value]),
-            -20
-          )};}
-          /.btn-check:focus + .${bfe}, .${bfe}:focus{background-color:${await shadeTintColor(
-            await HexToRGB(colors[value]),
-            -15
-          )};border-color:${await shadeTintColor(
-            await HexToRGB(colors[value]),
-            -20
-          )};}
-          /.btn-check:checked + .${bfe}, .btn-check:active + .${bfe}, .${bfe}:active, .${bfe}.active, .show > .${bfe}.dropdown-toggle{background-color:${await shadeTintColor(
-            await HexToRGB(colors[value]),
-            -20
-          )};border-color:${await shadeTintColor(
-            await HexToRGB(colors[value]),
-            -25
-          )};box-shadow: 0 0 0 0.25rem 
-          rgba(${await HexToRGB(
-            await shadeTintColor(await HexToRGB(colors[value]), 3)
-          )}, 0.5)
-          ;}
-          /.btn-check:checked + .btn-check:focus, .btn-check:active + .${bfe}:focus, .${bfe}:active:focus, .${bfe}.active:focus, .show > .${bfe}.dropdown-toggle:focus{box-shadow: 0 0 0 0.25rem 
-            rgba(${await HexToRGB(
-              await shadeTintColor(await HexToRGB(colors[value]), 3)
-            )}, 0.5)
-          ;}`;
+          /* 
+          bfeStringed += `{background-color:${colors[value]};border-color:${colors[value]};}
+          /.${bfe}:hover{background-color:${await darken(await HexToRGB(colors[value]), -5)};border-color:${await darken(await HexToRGB(colors[value]), -10)}
+          /.btn-check:focus + .${bfe}, .${bfe}:focus{background-color:${await darken(await HexToRGB(colors[value]), -50)};border-color:${await darken(await HexToRGB(colors[value]), -60)}
+          /.btn-check:checked + .${bfe}, .btn-check:active + .${bfe}, .${bfe}:active, .${bfe}.active, .show > .${bfe}.dropdown-toggle{background-color:${await darken(await HexToRGB(colors[value]), -60)};border-color:${await darken(await HexToRGB(colors[value]), -70)}
+          /.btn-check:checked + .btn-check:focus, .btn-check:active + .${bfe}:focus, .${bfe}:active:focus, .${bfe}.active:focus, .show > .${bfe}.dropdown-toggle:focus{box-shadow: 0 0 0 0.25rem ${await darken(await HexToRGB(colors[value]), -75)}}`; 
+          */
           break;
       }
     }
@@ -276,39 +254,36 @@ function createCSSRules(rule) {
   sheet = sheets.pop();
   sheet.insertRule(rule, sheet.cssRules.length);
 }
+
 function HexToRGB(Hex) {
   let HexNoCat = Hex.replace("#", "");
   let rgb =
-    HexNoCat.length !== 3
+    HexNoCat.length() !== 3
       ? [
           parseInt(HexNoCat.substr(0, 2), 16),
           parseInt(HexNoCat.substr(2, 2), 16),
           parseInt(HexNoCat.substr(4, 2), 16),
         ]
       : [
-          parseInt(HexNoCat.substr(0, 1) + HexNoCat.substr(0, 1), 16),
-          parseInt(HexNoCat.substr(1, 1) + HexNoCat.substr(1, 1), 16),
-          parseInt(HexNoCat.substr(2, 1) + HexNoCat.substr(2, 1), 16),
+          parseInt(HexNoCat.substr(0, 1), 16),
+          parseInt(HexNoCat.substr(1, 1), 16),
+          parseInt(HexNoCat.substr(2, 1), 16),
         ];
   return rgb;
 }
-function shadeTintColor(rgb, percent) {
-  console.log(rgb);
-  var R = rgb[0] === 0 && percent > 0 ? 16 : rgb[0] === 255 && percent < 0 ? 239 : rgb[0];
-  var G = rgb[1] === 0 && percent > 0 ? 16 : rgb[1] === 255 && percent < 0 ? 239 : rgb[1];
-  var B = rgb[2] === 0 && percent > 0 ? 16 : rgb[2] === 255 && percent < 0 ? 239 : rgb[2];
 
-  console.log(R + ' ' + G + ' ' + B)
+function shadeTintColor(rgb, percent) {
+  var R = rgb[0];
+  var G = rgb[1];
+  var B = rgb[2];
 
   R = parseInt((R * (100 + percent)) / 100);
   G = parseInt((G * (100 + percent)) / 100);
   B = parseInt((B * (100 + percent)) / 100);
 
-  console.log(R + ' ' + G + ' ' + B)
-
-  R = R > 255 ? 255 : R < 0 ? 0 : R;
-  G = G > 255 ? 255 : G < 0 ? 0 : G;
-  B = B > 255 ? 255 : B < 0 ? 0 : B;
+  R = R < 255 ? R : 255;
+  G = G < 255 ? G : 255;
+  B = B < 255 ? B : 255;
 
   var RR = R.toString(16).length == 1 ? "0" + R.toString(16) : R.toString(16);
   var GG = G.toString(16).length == 1 ? "0" + G.toString(16) : G.toString(16);
@@ -316,6 +291,27 @@ function shadeTintColor(rgb, percent) {
 
   return "#" + RR + GG + BB;
 }
+
+function lighten(rgb, lighten) {
+  let newColor = "#";
+  rgb.forEach((Hex) => {
+    newColor += Math.round(
+      (255 - Hex) * (1 - Math.pow(Math.E, -lighten)) + Hex
+    ).toString(16);
+  });
+  return newColor;
+}
+
+function darken(rgb, darken) {
+  let newColor = "#";
+  rgb.forEach((color) => {
+    newColor += Math.round(color / (1 - Math.pow(Math.E, -darken))).toString(
+      16
+    );
+  });
+  return newColor;
+}
+
 window.onload = cssCreate();
 /* 
 valueTypes:

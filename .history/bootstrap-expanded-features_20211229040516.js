@@ -37,11 +37,8 @@ async function cssCreate() {
     } else {
       value = bfeSplited[2];
     }
-    value = value.replace(/per/g, "%");
-    value = value.replace(/__min/g, " -");
-    value = value.replace(/_min/g, "-");
-    value = value.replace(/__/g, " ");
-    value = value.replace(/_/g, ".");
+    value = value.replace("per", "%");
+    value = value.replace("_", ".");
     switch (bfeSplited[1]) {
       case "w":
         bfeStringed += `{width:${value};}`;
@@ -145,10 +142,10 @@ async function cssCreate() {
     ) {
       switch (bfeSplited[1]) {
         case "bg":
-          bfeStringed += `{background-color:${colors[value]} !important;}`;
+          bfeStringed += `{background-color:${colors[value]};}`;
           break;
         case "text":
-          bfeStringed += `{color:${colors[value]} !important;}`;
+          bfeStringed += `{color:${colors[value]};}`;
           break;
         case "border":
           bfeStringed += `{border-color:${colors[value]} !important;}`;
@@ -173,7 +170,7 @@ async function cssCreate() {
           break;
         case "btn":
           console.log(colors[value]);
-          console.log(await shadeTintColor(await HexToRGB('0f0'), -25));
+          console.log(await shadeTintColor(await HexToRGB('0f0'), 50));
 
           bfeStringed += `{background-color:${colors[value]};border-color:${
             colors[value]
@@ -276,8 +273,10 @@ function createCSSRules(rule) {
   sheet = sheets.pop();
   sheet.insertRule(rule, sheet.cssRules.length);
 }
+
 function HexToRGB(Hex) {
   let HexNoCat = Hex.replace("#", "");
+  console.log(HexNoCat.length);
   let rgb =
     HexNoCat.length !== 3
       ? [
@@ -286,29 +285,24 @@ function HexToRGB(Hex) {
           parseInt(HexNoCat.substr(4, 2), 16),
         ]
       : [
-          parseInt(HexNoCat.substr(0, 1) + HexNoCat.substr(0, 1), 16),
-          parseInt(HexNoCat.substr(1, 1) + HexNoCat.substr(1, 1), 16),
-          parseInt(HexNoCat.substr(2, 1) + HexNoCat.substr(2, 1), 16),
+          parseInt(HexNoCat.substr(0, 1), 16),
+          parseInt(HexNoCat.substr(1, 1), 16),
+          parseInt(HexNoCat.substr(2, 1), 16),
         ];
   return rgb;
 }
 function shadeTintColor(rgb, percent) {
-  console.log(rgb);
-  var R = rgb[0] === 0 && percent > 0 ? 16 : rgb[0] === 255 && percent < 0 ? 239 : rgb[0];
-  var G = rgb[1] === 0 && percent > 0 ? 16 : rgb[1] === 255 && percent < 0 ? 239 : rgb[1];
-  var B = rgb[2] === 0 && percent > 0 ? 16 : rgb[2] === 255 && percent < 0 ? 239 : rgb[2];
-
-  console.log(R + ' ' + G + ' ' + B)
+  var R = rgb[0] !== 0 ? rgb[0] : 16;
+  var G = rgb[1] !== 0 ? rgb[1] : 16;
+  var B = rgb[2] !== 0 ? rgb[2] : 16;
 
   R = parseInt((R * (100 + percent)) / 100);
   G = parseInt((G * (100 + percent)) / 100);
   B = parseInt((B * (100 + percent)) / 100);
 
-  console.log(R + ' ' + G + ' ' + B)
-
-  R = R > 255 ? 255 : R < 0 ? 0 : R;
-  G = G > 255 ? 255 : G < 0 ? 0 : G;
-  B = B > 255 ? 255 : B < 0 ? 0 : B;
+  R = R < 255 ? R : 255;
+  G = G < 255 ? G : 255;
+  B = B < 255 ? B : 255;
 
   var RR = R.toString(16).length == 1 ? "0" + R.toString(16) : R.toString(16);
   var GG = G.toString(16).length == 1 ? "0" + G.toString(16) : G.toString(16);

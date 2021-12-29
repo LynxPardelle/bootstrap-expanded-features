@@ -37,11 +37,8 @@ async function cssCreate() {
     } else {
       value = bfeSplited[2];
     }
-    value = value.replace(/per/g, "%");
-    value = value.replace(/__min/g, " -");
-    value = value.replace(/_min/g, "-");
-    value = value.replace(/__/g, " ");
-    value = value.replace(/_/g, ".");
+    value = value.replace("per", "%");
+    value = value.replace("_", ".");
     switch (bfeSplited[1]) {
       case "w":
         bfeStringed += `{width:${value};}`;
@@ -133,82 +130,17 @@ async function cssCreate() {
       hasColors === true &&
       (bfeSplited[1] === "bg" ||
         bfeSplited[1] === "text" ||
-        bfeSplited[1] === "border" ||
-        bfeSplited[1] === "bordert" ||
-        bfeSplited[1] === "borderb" ||
-        bfeSplited[1] === "borders" ||
-        bfeSplited[1] === "bordere" ||
-        bfeSplited[1] === "borderx" ||
-        bfeSplited[1] === "bordery" ||
-        bfeSplited[1] === "btn") &&
+        bfeSplited[1] === "btn" ||
+        bfeSplited[1] === "border") &&
       colorsNames.includes(value)
     ) {
       switch (bfeSplited[1]) {
         case "bg":
-          bfeStringed += `{background-color:${colors[value]} !important;}`;
-          break;
+        bfeStringed += `{background-color:${colors[value]};}`;
+        break;
         case "text":
-          bfeStringed += `{color:${colors[value]} !important;}`;
-          break;
-        case "border":
-          bfeStringed += `{border-color:${colors[value]} !important;}`;
-          break;
-        case "bordert":
-          bfeStringed += `{border-top-color:${colors[value]} !important;}`;
-          break;
-        case "borderb":
-          bfeStringed += `{border-bottom-color:${colors[value]} !important;}`;
-          break;
-        case "borders":
-          bfeStringed += `{border-right-color:${colors[value]} !important;}`;
-          break;
-        case "bordere":
-          bfeStringed += `{border-left-color:${colors[value]} !important;}`;
-          break;
-        case "borderx":
-          bfeStringed += `{border-right-color:${colors[value]} !important;border-left-color:${colors[value]} !important;}`;
-          break;
-        case "bordery":
-          bfeStringed += `{border-top-color:${colors[value]} !important;border-bottom-color:${colors[value]} !important;}`;
-          break;
-        case "btn":
-          console.log(colors[value]);
-          console.log(await shadeTintColor(await HexToRGB('0f0'), -25));
-
-          bfeStringed += `{background-color:${colors[value]};border-color:${
-            colors[value]
-          };}
-          /.${bfe}:hover{background-color:${await shadeTintColor(
-            await HexToRGB(colors[value]),
-            -15
-          )};border-color:${await shadeTintColor(
-            await HexToRGB(colors[value]),
-            -20
-          )};}
-          /.btn-check:focus + .${bfe}, .${bfe}:focus{background-color:${await shadeTintColor(
-            await HexToRGB(colors[value]),
-            -15
-          )};border-color:${await shadeTintColor(
-            await HexToRGB(colors[value]),
-            -20
-          )};}
-          /.btn-check:checked + .${bfe}, .btn-check:active + .${bfe}, .${bfe}:active, .${bfe}.active, .show > .${bfe}.dropdown-toggle{background-color:${await shadeTintColor(
-            await HexToRGB(colors[value]),
-            -20
-          )};border-color:${await shadeTintColor(
-            await HexToRGB(colors[value]),
-            -25
-          )};box-shadow: 0 0 0 0.25rem 
-          rgba(${await HexToRGB(
-            await shadeTintColor(await HexToRGB(colors[value]), 3)
-          )}, 0.5)
-          ;}
-          /.btn-check:checked + .btn-check:focus, .btn-check:active + .${bfe}:focus, .${bfe}:active:focus, .${bfe}.active:focus, .show > .${bfe}.dropdown-toggle:focus{box-shadow: 0 0 0 0.25rem 
-            rgba(${await HexToRGB(
-              await shadeTintColor(await HexToRGB(colors[value]), 3)
-            )}, 0.5)
-          ;}`;
-          break;
+        bfeStringed += `{color:${colors[value]};}`;
+        break;
       }
     }
 
@@ -232,14 +164,8 @@ async function cssCreate() {
             break;
         }
       } else {
-        bfesStringed += bfeStringed + "/";
-      }
-    }
-  }
-  if (bfesStringed !== "") {
-    for (let bfe of bfesStringed.split("/")) {
-      if (bfe !== "") {
-        createCSSRules(bfe);
+        createCSSRules(bfeStringed);
+        bfesStringed += bfeStringed;
       }
     }
   }
@@ -272,49 +198,10 @@ async function cssCreate() {
 function createCSSRules(rule) {
   let sheets = [...document.styleSheets];
 
+  console.log(rule);
   let sheet;
   sheet = sheets.pop();
   sheet.insertRule(rule, sheet.cssRules.length);
-}
-function HexToRGB(Hex) {
-  let HexNoCat = Hex.replace("#", "");
-  let rgb =
-    HexNoCat.length !== 3
-      ? [
-          parseInt(HexNoCat.substr(0, 2), 16),
-          parseInt(HexNoCat.substr(2, 2), 16),
-          parseInt(HexNoCat.substr(4, 2), 16),
-        ]
-      : [
-          parseInt(HexNoCat.substr(0, 1) + HexNoCat.substr(0, 1), 16),
-          parseInt(HexNoCat.substr(1, 1) + HexNoCat.substr(1, 1), 16),
-          parseInt(HexNoCat.substr(2, 1) + HexNoCat.substr(2, 1), 16),
-        ];
-  return rgb;
-}
-function shadeTintColor(rgb, percent) {
-  console.log(rgb);
-  var R = rgb[0] === 0 && percent > 0 ? 16 : rgb[0] === 255 && percent < 0 ? 239 : rgb[0];
-  var G = rgb[1] === 0 && percent > 0 ? 16 : rgb[1] === 255 && percent < 0 ? 239 : rgb[1];
-  var B = rgb[2] === 0 && percent > 0 ? 16 : rgb[2] === 255 && percent < 0 ? 239 : rgb[2];
-
-  console.log(R + ' ' + G + ' ' + B)
-
-  R = parseInt((R * (100 + percent)) / 100);
-  G = parseInt((G * (100 + percent)) / 100);
-  B = parseInt((B * (100 + percent)) / 100);
-
-  console.log(R + ' ' + G + ' ' + B)
-
-  R = R > 255 ? 255 : R < 0 ? 0 : R;
-  G = G > 255 ? 255 : G < 0 ? 0 : G;
-  B = B > 255 ? 255 : B < 0 ? 0 : B;
-
-  var RR = R.toString(16).length == 1 ? "0" + R.toString(16) : R.toString(16);
-  var GG = G.toString(16).length == 1 ? "0" + G.toString(16) : G.toString(16);
-  var BB = B.toString(16).length == 1 ? "0" + B.toString(16) : B.toString(16);
-
-  return "#" + RR + GG + BB;
 }
 window.onload = cssCreate();
 /* 
