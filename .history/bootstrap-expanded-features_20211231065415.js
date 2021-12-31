@@ -405,9 +405,9 @@ async function cssCreate() {
               ;
             }`;
             } else {
-              befStringed += `{
-                background-color:${colors[value]};
-                border-color:${colors[value]};}
+              befStringed += `{background-color:${colors[value]};border-color:${
+                colors[value]
+              };}
               /.${bef}:hover{background-color:${await shadeTintColor(
                 await HexToRGB(colors[value]),
                 -15
@@ -450,9 +450,6 @@ async function cssCreate() {
                   colors[value.split(" ")[0]]
                 ).toString()}, ${value.split(" ")[2]});}
                 /.${bef}:hover{
-                  background-color: rgba(${await HexToRGB(
-                    colors[value.split(" ")[0]]
-                  ).toString()}, ${value.split(" ")[2]});
                 border-color: rgba(${await HexToRGB(
                   await shadeTintColor(
                     await HexToRGB(colors[value.split(" ")[0]]),
@@ -493,10 +490,8 @@ async function cssCreate() {
               }`;
             } else {
               befStringed += `{
-                color:${colors[value]};
                   border-color:${colors[value]};}
                 /.${bef}:hover{
-                  background-color:${colors[value]};
                   border-color:${await shadeTintColor(
                     await HexToRGB(colors[value]),
                     -20

@@ -32,6 +32,7 @@ var colorsLP = {
   tree: "#5A311D",
   blood: "#8A0707",
   beast: "#F5785D",
+  
 };
 pushColors(colorsDefault);
 pushColors(colorsLP);
@@ -224,7 +225,6 @@ async function cssCreate() {
           befSplited[1] === "borderColorx" ||
           befSplited[1] === "borderColory" ||
           befSplited[1] === "btn" ||
-          befSplited[1] === "btnOutline" ||
           befSplited[1] === "boxShadow" ||
           befSplited[1] === "textShadow") &&
         (colorsNames.includes(value) ||
@@ -405,9 +405,9 @@ async function cssCreate() {
               ;
             }`;
             } else {
-              befStringed += `{
-                background-color:${colors[value]};
-                border-color:${colors[value]};}
+              befStringed += `{background-color:${colors[value]};border-color:${
+                colors[value]
+              };}
               /.${bef}:hover{background-color:${await shadeTintColor(
                 await HexToRGB(colors[value]),
                 -15
@@ -438,90 +438,6 @@ async function cssCreate() {
                   await shadeTintColor(await HexToRGB(colors[value]), 3)
                 )}, 0.5)
               ;}`;
-            }
-            break;
-          case "btnOutline":
-            if (value.includes(" OPA")) {
-              befStringed += `{
-                color: rgba(${await HexToRGB(
-                  colors[value.split(" ")[0]]
-                ).toString()}, ${value.split(" ")[2]});
-                border-color: rgba(${await HexToRGB(
-                  colors[value.split(" ")[0]]
-                ).toString()}, ${value.split(" ")[2]});}
-                /.${bef}:hover{
-                  background-color: rgba(${await HexToRGB(
-                    colors[value.split(" ")[0]]
-                  ).toString()}, ${value.split(" ")[2]});
-                border-color: rgba(${await HexToRGB(
-                  await shadeTintColor(
-                    await HexToRGB(colors[value.split(" ")[0]]),
-                    -20
-                  )
-                ).toString()}, ${value.split(" ")[2]});}
-                /.btn-check:focus + .${bef}, .${bef}:focus{
-                border-color: rgba(${await HexToRGB(
-                  await shadeTintColor(
-                    await HexToRGB(colors[value.split(" ")[0]]),
-                    -20
-                  )
-                ).toString()}, ${value.split(" ")[2]});}
-                /.btn-check:checked + .${bef}, .btn-check:active + .${bef}, .${bef}:active, .${bef}.active, .show > .${bef}.dropdown-toggle{
-                border-color: rgba(${await HexToRGB(
-                  await shadeTintColor(
-                    await HexToRGB(colors[value.split(" ")[0]]),
-                    -25
-                  )
-                ).toString()}, ${value.split(" ")[2]});
-                box-shadow: 0 0 0 0.25rem 
-                rgba(${await HexToRGB(
-                  await shadeTintColor(
-                    await HexToRGB(colors[value.split(" ")[0]]),
-                    3
-                  )
-                )}, ${value.split(" ")[2]})
-                ;}
-                /.btn-check:checked + .btn-check:focus, .btn-check:active + .${bef}:focus, .${bef}:active:focus, .${bef}.active:focus, .show > .${bef}.dropdown-toggle:focus{
-                  box-shadow: 0 0 0 0.25rem 
-                  rgba(${await HexToRGB(
-                    await shadeTintColor(
-                      await HexToRGB(colors[value.split(" ")[0]]),
-                      3
-                    )
-                  )}, ${value.split(" ")[2]})
-                ;
-              }`;
-            } else {
-              befStringed += `{
-                color:${colors[value]};
-                  border-color:${colors[value]};}
-                /.${bef}:hover{
-                  background-color:${colors[value]};
-                  border-color:${await shadeTintColor(
-                    await HexToRGB(colors[value]),
-                    -20
-                  )};}
-                /.btn-check:focus + .${bef}, .${bef}:focus{
-                  border-color:${await shadeTintColor(
-                    await HexToRGB(colors[value]),
-                    -20
-                  )};}
-                /.btn-check:checked + .${bef}, .btn-check:active + .${bef}, .${bef}:active, .${bef}.active, .show > .${bef}.dropdown-toggle{
-                  border-color:${await shadeTintColor(
-                    await HexToRGB(colors[value]),
-                    -25
-                  )};
-                box-shadow: 0 0 0 0.25rem 
-                rgba(${await HexToRGB(
-                  await shadeTintColor(await HexToRGB(colors[value]), 3)
-                )}, 0.5)
-                ;}
-                /.btn-check:checked + .btn-check:focus, .btn-check:active + .${bef}:focus, .${bef}:active:focus, .${bef}.active:focus, .show > .${bef}.dropdown-toggle:focus{
-                  box-shadow: 0 0 0 0.25rem 
-                  rgba(${await HexToRGB(
-                    await shadeTintColor(await HexToRGB(colors[value]), 3)
-                  )}, 0.5)
-                ;}`;
             }
             break;
           case "boxShadow":
