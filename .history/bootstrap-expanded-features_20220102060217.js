@@ -35,7 +35,6 @@ var colorsLP = {
   abyss: "#000",
 };
 pushColors(colorsDefault);
-pushColors(colorsBS);
 pushColors(colorsLP);
 async function cssCreate() {
   try {

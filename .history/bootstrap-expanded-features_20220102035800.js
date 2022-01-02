@@ -32,10 +32,8 @@ var colorsLP = {
   tree: "#5A311D",
   blood: "#8A0707",
   beast: "#F5785D",
-  abyss: "#000",
 };
 pushColors(colorsDefault);
-pushColors(colorsBS);
 pushColors(colorsLP);
 async function cssCreate() {
   try {
@@ -69,7 +67,7 @@ async function cssCreate() {
       ) {
         hasBP = true;
         value = befSplited[3];
-      } else if(befSplited[2]) {
+      } else {
         value = befSplited[2];
       }
       value = await value.replace(/per/g, "%");
@@ -222,8 +220,6 @@ async function cssCreate() {
           befSplited[1] === "textHover" ||
           befSplited[1] === "textActive" ||
           befSplited[1] === "link" ||
-          befSplited[1] === "linkHover" ||
-          befSplited[1] === "linkActive" ||
           befSplited[1] === "borderColor" ||
           befSplited[1] === "borderColort" ||
           befSplited[1] === "borderColorb" ||
@@ -247,7 +243,6 @@ async function cssCreate() {
           (colorsNames.includes(value.split(" ")[4]) &&
             colorsNames.includes(value.split(" ")[4])))
       ) {
-        console.log(value);
         switch (befSplited[1]) {
           case "bg":
             if (value.includes(" OPA")) {

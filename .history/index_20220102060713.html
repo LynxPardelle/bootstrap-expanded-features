@@ -22,7 +22,6 @@
           align-items-center
           bef
           bef-boxShadow-0px__2px__4px__lavender
-          bef-z-5
           position-fixed
           top-0
           w-100
@@ -280,7 +279,7 @@
               After that you can write classes like in bootstrap but with custom
               values like in this example:
             </p>
-            <div class="d-flex mb-5 justify-content-evenly">
+            <div class="d-flex justify-content-evenly">
               <div>
                 <h5 class="text-center my-3">Example</h5>
                 <p class="bg-primary text-light bef bef-p-14px">
@@ -315,13 +314,13 @@
             </div>
             <!-- NEWCOLORSBASICHTU -->
             <a id="newColorsBasicHTU"></a>
-            <h4>New Colors</h4>
+            <h4 class="mt-4">New Colors</h4>
             <p class="mt-4 mb-3 text-start bef bef-link-futurePop">
               In this library you will have a lot of new colors that are from
-              the original bootstrap, but I included some custom colors and you
-              can add even more.
+              the original bootstrap, but I included some more and you can add
+              even more.
             </p>
-            <h5 class="my-4">List of Bootstrap original colors</h5>
+            <h5 class="my-3">List of Bootstrap original colors</h5>
             <ul class="list-group">
               <li class="list-group-item text-light bg-primary">Primary</li>
               <li class="list-group-item text-light bg-secondary">Secondary</li>
@@ -332,123 +331,29 @@
               <li class="list-group-item text-dark bg-light">Light</li>
               <li class="list-group-item text-light bg-dark">Dark</li>
             </ul>
-            <h5 class="my-4">List of New Bootstrap original colors</h5>
+            <h5 class="my-3">List of New Bootstrap original colors</h5>
             <ul class="list-group">
-              <li class="list-group-item text-light bef bef-bg-indigo">
-                Indigo
-              </li>
-              <li class="list-group-item text-light bef bef-bg-purple">
-                Purple
-              </li>
+              <li class="list-group-item text-light bef bef-bg-indigo">Indigo</li>
+              <li class="list-group-item text-light bef bef-bg-purple">Purple</li>
               <li class="list-group-item text-light bef bef-bg-pink">Pink</li>
-              <li class="list-group-item text-light bef bef-bg-orange">
-                Orange
-              </li>
+              <li class="list-group-item text-light bef bef-bg-orange">Orange</li>
               <li class="list-group-item text-dark bef bef-bg-teal">Teal</li>
               <li class="list-group-item text-dark bef bef-bg-white">White</li>
               <li class="list-group-item text-light bef bef-bg-gray">Gray</li>
             </ul>
-            <h5 class="my-4">List of New Custom colors</h5>
+            <h5 class="my-3">List of New Custom colors</h5>
             <ul class="list-group">
-              <li class="list-group-item text-light bef bef-bg-mystic">
-                Mystic
-              </li>
-              <li class="list-group-item text-dark bef bef-bg-lavender">
-                Lavender
-              </li>
+              <li class="list-group-item text-light bef bef-bg-mystic">Mystic</li>
+              <li class="list-group-item text-light bef bef-bg-lavender">Lavender</li>
               <li class="list-group-item text-light bef bef-bg-fairy">Fairy</li>
-              <li class="list-group-item text-dark bef bef-bg-summer">
-                Summer
-              </li>
+              <li class="list-group-item text-light bef bef-bg-summer">Summer</li>
               <li class="list-group-item text-dark bef bef-bg-old">Old</li>
-              <li class="list-group-item text-dark bef bef-bg-friend">
-                Friend
-              </li>
+              <li class="list-group-item text-dark bef bef-bg-friend">Friend</li>
               <li class="list-group-item text-light bef bef-bg-tree">Tree</li>
               <li class="list-group-item text-light bef bef-bg-blood">Blood</li>
               <li class="list-group-item text-light bef bef-bg-beast">Beast</li>
               <li class="list-group-item text-light bef bef-bg-abyss">Abyss</li>
             </ul>
-            <h5 class="my-4">Adding new colors</h5>
-            <p class="mt-3 mb-4 text-start bef bef-link-futurePop">
-              You can add more colors, but how you do it depends if you are
-              using the CDN or npm installing it.
-            </p>
-
-            <h6>For the CDN version</h6>
-            <p class="mt-3 mb-4 text-start bef bef-link-futurePop">
-              You will need to create a var with a object with the name "colors"
-              like in this code that you can copy-paste:
-            </p>
-            <p
-              class="
-                d-inline-block
-                p-2
-                bef
-                bef-m-0rem__2rem
-                bef-bg-futurePop__OPA__0_03
-              "
-            >
-              <code class="text-dark">
-                <span class="text-success"> &#60;!-- SOME CODE --&#62; </span>
-                <br />
-                <span class="text-primary"> &#60;script&#62; </span>
-                <br />
-                <span class="text-primary">var</span> colors = {
-                <br />
-                &ensp;monster: "#00AA00",
-                <br />
-                &ensp;futurePop: "#9700FF",
-                <br />
-                };
-                <br />
-                <span class="text-primary"> &#60;&#47;script&#62; </span>
-                <br />
-                <span class="text-success">
-                  &#60;!-- SCRIPT LINKED TO THE CDN VERSION --&#62;
-                </span>
-              </code>
-            </p>
-
-            <h6>For the npm version</h6>
-            <p class="mt-3 mb-4 text-start bef bef-link-futurePop">
-              You will need to import the library, create a var with a object
-              with any name, it can be "my_new_colors" and then you can use the
-              pushColors() function and then use the cssCreate() function to
-              generate all the css with the new colors that you need like in
-              this code that you can copy-paste:
-            </p>
-            <p
-              class="
-                d-inline-block
-                p-2
-                mb-5
-                bef
-                bef-m-0rem__2rem
-                bef-bg-futurePop__OPA__0_03
-              "
-            >
-              <code class="text-dark">
-                <span class="text-success"> &#60;!-- SOME CODE --&#62; </span>
-                <br />
-                <span class="text-primary"> &#60;script&#62; </span>
-                <br />
-                <span class="text-primary">var</span> colors = {
-                <br />
-                &ensp;monster: "#00AA00",
-                <br />
-                &ensp;futurePop: "#9700FF",
-                <br />
-                };
-                <br />
-                <span class="text-primary"> &#60;&#47;script&#62; </span>
-                <br />
-                <span class="text-success">
-                  &#60;!-- SCRIPT LINKED TO THE CDN VERSION --&#62;
-                </span>
-              </code>
-            </p>
-
             <!-- BREAKPOINTSBASICHTU -->
             <a id="bpsBasicHTU"></a>
             <h4 class="mt-4">BreakPoints</h4>

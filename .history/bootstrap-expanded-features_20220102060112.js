@@ -35,7 +35,6 @@ var colorsLP = {
   abyss: "#000",
 };
 pushColors(colorsDefault);
-pushColors(colorsBS);
 pushColors(colorsLP);
 async function cssCreate() {
   try {
@@ -247,7 +246,6 @@ async function cssCreate() {
           (colorsNames.includes(value.split(" ")[4]) &&
             colorsNames.includes(value.split(" ")[4])))
       ) {
-        console.log(value);
         switch (befSplited[1]) {
           case "bg":
             if (value.includes(" OPA")) {
