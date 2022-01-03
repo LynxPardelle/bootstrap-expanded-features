@@ -759,14 +759,8 @@ if(window) {
 if(typeof exports != "undefined"){    
   exports.pushColors = exportPushColors((newcolors)=>{
     pushColors(newcolors);
-  });
-  exports.createCSSRules = exportcreateCSSRules((rule)=>{
-    return createCSSRules(rule);
-  });
-  exports.HexToRGB = exportHexToRGB((Hex)=>{
-    return HexToRGB(Hex);
-  });  
-  exports.shadeTintColor = exportShadeTintColor((rgb, percent)=>{
+  });    
+  exports.cssCreate = exportShadeTintColor((rgb, percent)=>{
     return shadeTintColor(rgb, percent);
   });
   exports.cssCreate = exportCSSCreate(()=>{

@@ -247,6 +247,7 @@ async function cssCreate() {
           (colorsNames.includes(value.split(" ")[4]) &&
             colorsNames.includes(value.split(" ")[4])))
       ) {
+        console.log(value);
         switch (befSplited[1]) {
           case "bg":
             if (value.includes(" OPA")) {
@@ -752,24 +753,4 @@ async function pushColors(newColors) {
     console.log(err);
   }
 }
-if(window) {
-  window.onload = cssCreate();
-}
-
-if(typeof exports != "undefined"){    
-  exports.pushColors = exportPushColors((newcolors)=>{
-    pushColors(newcolors);
-  });
-  exports.createCSSRules = exportcreateCSSRules((rule)=>{
-    return createCSSRules(rule);
-  });
-  exports.HexToRGB = exportHexToRGB((Hex)=>{
-    return HexToRGB(Hex);
-  });  
-  exports.shadeTintColor = exportShadeTintColor((rgb, percent)=>{
-    return shadeTintColor(rgb, percent);
-  });
-  exports.cssCreate = exportCSSCreate(()=>{
-    cssCreate();
-  });
-}
+window.onload = cssCreate();
