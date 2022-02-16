@@ -34,7 +34,6 @@ var colorsLP = {
   beast: "#F5785D",
   abyss: "#000",
 };
-var alreadyCreatedClasses = [];
 pushColors(colorsDefault);
 pushColors(colorsBS);
 pushColors(colorsLP);
@@ -59,12 +58,7 @@ async function cssCreate() {
     let befsStringedXXL = "";
     for (let bef of befs) {
       let befStringed = "." + bef;
-      if (alreadyCreatedClasses.includes(befStringed)) {
-        console.log("continue");
-        continue;
-      }
-      alreadyCreatedClasses.push(befStringed);
-      if (
+      /* if (
         sheets
           .map((s) =>
             [...s.cssRules]
@@ -76,7 +70,7 @@ async function cssCreate() {
       ) {
         console.log("continue");
         continue;
-      }
+      } */
       let befSplited = await bef.split("-");
       let hasBP = false;
       let value = "";
@@ -132,10 +126,13 @@ async function cssCreate() {
           befStringed += `{bottom:${value};}`;
           break;
         case "end":
-          befStringed += `{right:${value};}`;
+          befStringed += `{left:${value};}`;
           break;
         case "start":
-          befStringed += `{left:${value};}`;
+          befStringed += `{right:${value};}`;
+          break;
+        case "bot":
+          befStringed += `{bottom:${value};}`;
           break;
         case "fs":
           befStringed += `{font-size:${value};}`;
@@ -922,10 +919,7 @@ function shadeTintColor(rgb, percent) {
 async function pushColors(newColors) {
   try {
     await Object.keys(newColors).forEach((key) => {
-      colors[key] = newColors[key].replace(
-        "!important" || "!default" || /\s+/g,
-        ""
-      );
+      colors[key] = newColors[key];
     });
     await Object.keys(colors).forEach((key) => {
       if (!colorsNames.includes(key)) {

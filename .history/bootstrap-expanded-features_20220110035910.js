@@ -34,13 +34,11 @@ var colorsLP = {
   beast: "#F5785D",
   abyss: "#000",
 };
-var alreadyCreatedClasses = [];
 pushColors(colorsDefault);
 pushColors(colorsBS);
 pushColors(colorsLP);
 async function cssCreate() {
   try {
-    let sheets = [...document.styleSheets];
     let startTimeCSSCreate = performance.now();
     let befElements = await document.getElementsByClassName("bef");
     let befs = [];
@@ -59,24 +57,6 @@ async function cssCreate() {
     let befsStringedXXL = "";
     for (let bef of befs) {
       let befStringed = "." + bef;
-      if (alreadyCreatedClasses.includes(befStringed)) {
-        console.log("continue");
-        continue;
-      }
-      alreadyCreatedClasses.push(befStringed);
-      if (
-        sheets
-          .map((s) =>
-            [...s.cssRules]
-              .reverse()
-              .find((i) => i.cssText.includes(befStringed))
-          )
-          .filter((i) => i)
-          .pop()
-      ) {
-        console.log("continue");
-        continue;
-      }
       let befSplited = await bef.split("-");
       let hasBP = false;
       let value = "";
@@ -132,10 +112,13 @@ async function cssCreate() {
           befStringed += `{bottom:${value};}`;
           break;
         case "end":
-          befStringed += `{right:${value};}`;
+          befStringed += `{left:${value};}`;
           break;
         case "start":
-          befStringed += `{left:${value};}`;
+          befStringed += `{right:${value};}`;
+          break;
+        case "bot":
+          befStringed += `{bottom:${value};}`;
           break;
         case "fs":
           befStringed += `{font-size:${value};}`;
@@ -703,30 +686,30 @@ async function createCSSRules(rule) {
     let sheets = [...document.styleSheets];
 
     let sheet;
-    if (sheets[sheets.length - 1]) {
-      sheet = await sheets[sheets.length - 1];
-    } else {
-      sheet = sheets.pop();
-    }
+    sheet = await sheets[sheets.length -1];
 
     let ruleI;
     ruleI = rule;
 
-    let selector = "";
-    let props = "";
-    let propsArr = [];
-    let ruleOriginal = "";
+    let selector;
+    let props;
+    let propsArr;
+    let ruleOriginal;
     if (ruleI && !ruleI.split("{")[0].includes("@media")) {
       selector = ruleI.split("{")[0];
       // CSS (& HTML) reduce spaces in selector to one.
-      selector = selector.replace("\n", "").replace(/\s+/g, " ");
+      selector = selector.replace(/\s+/g, " ");
       let findRule = (s) =>
-        [...s.cssRules].reverse().find((i) => i.cssText.includes(selector));
+        [...s.cssRules].reverse().find((i) => i.selectorText == selector);
       ruleOriginal = await sheets
         .map(findRule)
         .filter((i) => i)
         .pop();
+        console.log(sheets);
+        console.log(ruleOriginal);
+    }
 
+    if (ruleI && !ruleI.split("{")[0].includes("@media")) {
       props = ruleI.split("{")[1].split("}")[0];
       props = props.trim();
       if (props.lastIndexOf(";") === props.length - 1) {
@@ -740,101 +723,20 @@ async function createCSSRules(rule) {
         });
         props = propsN.trim();
       }
-      propsArr = props.split(/\s*;\s*/).map((i) => i.split(/\s*:\s*/));
-    } else {
-      let i = 0;
-      let newRule = {
-        rule: "",
-        prop: "",
-      };
-      for (let ruleISplit of ruleI.split("{")) {
-        if (i === 0) {
-          ruleOriginal = [];
-          i++;
-          continue;
-        }
-        selector = ruleISplit.includes("}")
-          ? ruleISplit.split("}")[ruleISplit.split("}").length - 1]
-          : ruleISplit;
-        // CSS (& HTML) reduce spaces in selector to one.
-        if (selector !== "") {
-          selector = selector.replace("\n", "").replace(/\s+/g, " ");
-          let findRule = (s) =>
-            [...s.cssRules].reverse().find((i) => i.cssText.includes(selector));
-          let posibleRule = await sheets
-            .map(findRule)
-            .filter((i) => i)
-            .pop();
-
-          if (posibleRule != undefined) {
-            newRule.rule = posibleRule;
-          }
-        } else {
-          props = ruleISplit.includes("}")
-            ? ruleISplit.split("}")[0]
-            : ruleISplit;
-
-          // CSS (& HTML) reduce spaces in selector to one.
-          if (props !== "") {
-            props = props.replace("\n", "").replace(/\s+/g, " ");
-            if (props.lastIndexOf(";") === props.length - 1) {
-              props = props.substring(0, props.length - 1);
-            }
-            if (props.includes("\n")) {
-              let propsN = "";
-              props.split("\n").forEach((prop) => {
-                prop = prop.trim();
-                propsN += " " + prop;
-              });
-              props = propsN.trim();
-            }
-            let propArr = props.split(/\s*;\s*/).map((i) => i.split(/\s*:\s*/));
-            if (newRule.rule != "") {
-              newRule.prop = propArr;
-              ruleOriginal.push(newRule);
-              newRule = {
-                rule: "",
-                prop: "",
-              };
-            }
-          }
-        }
-      }
+      propsArr = props.sup
+        ? props.split(/\s*;\s*/).map((i) => i.split(/\s*:\s*/)) // from string
+        : Object.entries(props); // from Object
     }
-    if (
-      (typeof ruleOriginal === "string" && ruleOriginal !== "") ||
-      (typeof ruleOriginal === "object" && ruleOriginal[0])
-    ) {
-      if (ruleOriginal[0]) {
-        for (let ruleO of ruleOriginal) {
-          console.log(ruleO);
-          for (let [prop, val] of ruleO.prop) {
-            console.log(prop);
-            console.log(val);
-            prop = prop
-              .replace(/-(.)/g, (a) => {
-                return a.toUpperCase();
-              })
-              .replace(/-/g, "");
-            console.log(ruleO.rule);
-            ruleO.rule.cssRules[0].style[prop] = await val.split(
-              / *!(?=important)/
-            );
-            console.log(ruleO.rule.cssRules[0]);
-          }
-        }
-      } else {
-        for (let [prop, val] of propsArr) {
-          console.log(prop);
-          prop = prop
-            .replace(/-(.)/g, (a) => {
-              return a.toUpperCase();
-            })
-            .replace(/-/g, "");
-          ruleOriginal.style[prop] = val.split(/ *!(?=important)/);
-        }
+
+    if (ruleOriginal)
+      for (let [prop, val] of propsArr) {
+        prop = prop.replace(/-(.)/g, (a)=>{
+          return a.toUpperCase();
+        }).replace(/-/g, '');
+        ruleOriginal.style[prop] = val.split(/ *!(?=important)/);
+        console.log(ruleOriginal);
       }
-    } else {
+    else {
       await sheet.insertRule(ruleI, sheet.cssRules.length);
     }
   } catch (err) {
@@ -842,49 +744,19 @@ async function createCSSRules(rule) {
   }
 }
 function HexToRGB(Hex) {
-  let rgb;
-  if (!Hex.includes("rgb") && !Hex.includes("rgba")) {
-    let HexNoCat = Hex.replace("#", "");
-    rgb =
-      HexNoCat.length !== 3 && HexNoCat.length === 8
-        ? [
-            parseInt(HexNoCat.substr(0, 2), 16),
-            parseInt(HexNoCat.substr(2, 2), 16),
-            parseInt(HexNoCat.substr(4, 2), 16),
-            parseInt(((HexNoCat.substr(6, 2), 16) / 255).toFixed(2)),
-          ]
-        : HexNoCat.length !== 3 && HexNoCat.length === 6
-        ? [
-            parseInt(HexNoCat.substr(0, 2), 16),
-            parseInt(HexNoCat.substr(2, 2), 16),
-            parseInt(HexNoCat.substr(4, 2), 16),
-          ]
-        : HexNoCat.length !== 3 && HexNoCat.length === 4
-        ? [
-            parseInt(HexNoCat.substr(0, 2), 16),
-            parseInt(HexNoCat.substr(1, 2), 16),
-            parseInt(HexNoCat.substr(2, 2), 16),
-            parseInt(((HexNoCat.substr(3, 2), 16) / 255).toFixed(2)),
-          ]
-        : [
-            parseInt(HexNoCat.substr(0, 1) + HexNoCat.substr(0, 1), 16),
-            parseInt(HexNoCat.substr(1, 1) + HexNoCat.substr(1, 1), 16),
-            parseInt(HexNoCat.substr(2, 1) + HexNoCat.substr(2, 1), 16),
-          ];
-  } else {
-    rgb = Hex.split("(")[1].split(",")[4]
+  let HexNoCat = Hex.replace("#", "");
+  let rgb =
+    HexNoCat.length !== 3
       ? [
-          parseInt(Hex.split("(")[1].split(",")[0]),
-          parseInt(Hex.split("(")[1].split(",")[1]),
-          parseInt(Hex.split("(")[1].split(",")[2]),
-          parseInt(Hex.split("(")[1].split(",")[3]),
+          parseInt(HexNoCat.substr(0, 2), 16),
+          parseInt(HexNoCat.substr(2, 2), 16),
+          parseInt(HexNoCat.substr(4, 2), 16),
         ]
       : [
-          parseInt(Hex.split("(")[1].split(",")[0]),
-          parseInt(Hex.split("(")[1].split(",")[1]),
-          parseInt(Hex.split("(")[1].split(",")[2]),
+          parseInt(HexNoCat.substr(0, 1) + HexNoCat.substr(0, 1), 16),
+          parseInt(HexNoCat.substr(1, 1) + HexNoCat.substr(1, 1), 16),
+          parseInt(HexNoCat.substr(2, 1) + HexNoCat.substr(2, 1), 16),
         ];
-  }
   return rgb;
 }
 function shadeTintColor(rgb, percent) {
@@ -906,7 +778,6 @@ function shadeTintColor(rgb, percent) {
       : rgb[2] === 255 && percent < 0
       ? 239
       : rgb[2];
-  var A = rgb[3] ? (rgb[3] * 255).toString(16) : "FF";
   R = parseInt((R * (100 + percent)) / 100);
   G = parseInt((G * (100 + percent)) / 100);
   B = parseInt((B * (100 + percent)) / 100);
@@ -916,16 +787,12 @@ function shadeTintColor(rgb, percent) {
   var RR = R.toString(16).length == 1 ? "0" + R.toString(16) : R.toString(16);
   var GG = G.toString(16).length == 1 ? "0" + G.toString(16) : G.toString(16);
   var BB = B.toString(16).length == 1 ? "0" + B.toString(16) : B.toString(16);
-  var AA = A.toString(16).length == 1 ? "0" + A.toString(16) : A.toString(16);
-  return "#" + RR + GG + BB + AA;
+  return "#" + RR + GG + BB;
 }
 async function pushColors(newColors) {
   try {
     await Object.keys(newColors).forEach((key) => {
-      colors[key] = newColors[key].replace(
-        "!important" || "!default" || /\s+/g,
-        ""
-      );
+      colors[key] = newColors[key];
     });
     await Object.keys(colors).forEach((key) => {
       if (!colorsNames.includes(key)) {

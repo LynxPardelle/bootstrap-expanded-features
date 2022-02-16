@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "..\\d-grid-features-for-bootstrap"
+		},
+		{
+			"path": "..\\portfolioLynxPardelle\\LynxPortfolio\\src\\assets\\css"
+		},
+		{
+			"path": "G:\\Excritorio\\scssLP"
+		},
+		{
+			"path": "..\\..\\Downloads\\bootstrap-5.1.3"
+		},
+		{
+			"path": "..\\BCAN"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "bootstrap-expanded-features"
+	}
+}

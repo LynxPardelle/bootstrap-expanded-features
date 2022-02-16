@@ -34,7 +34,6 @@ var colorsLP = {
   beast: "#F5785D",
   abyss: "#000",
 };
-var alreadyCreatedClasses = [];
 pushColors(colorsDefault);
 pushColors(colorsBS);
 pushColors(colorsLP);
@@ -59,12 +58,7 @@ async function cssCreate() {
     let befsStringedXXL = "";
     for (let bef of befs) {
       let befStringed = "." + bef;
-      if (alreadyCreatedClasses.includes(befStringed)) {
-        console.log("continue");
-        continue;
-      }
-      alreadyCreatedClasses.push(befStringed);
-      if (
+      /* if (
         sheets
           .map((s) =>
             [...s.cssRules]
@@ -76,7 +70,7 @@ async function cssCreate() {
       ) {
         console.log("continue");
         continue;
-      }
+      } */
       let befSplited = await bef.split("-");
       let hasBP = false;
       let value = "";
@@ -132,10 +126,13 @@ async function cssCreate() {
           befStringed += `{bottom:${value};}`;
           break;
         case "end":
-          befStringed += `{right:${value};}`;
+          befStringed += `{left:${value};}`;
           break;
         case "start":
-          befStringed += `{left:${value};}`;
+          befStringed += `{right:${value};}`;
+          break;
+        case "bot":
+          befStringed += `{bottom:${value};}`;
           break;
         case "fs":
           befStringed += `{font-size:${value};}`;
@@ -740,7 +737,9 @@ async function createCSSRules(rule) {
         });
         props = propsN.trim();
       }
-      propsArr = props.split(/\s*;\s*/).map((i) => i.split(/\s*:\s*/));
+      propsArr = props.sup
+        ? props.split(/\s*;\s*/).map((i) => i.split(/\s*:\s*/)) // from string
+        : Object.entries(props); // from Object
     } else {
       let i = 0;
       let newRule = {
@@ -788,7 +787,10 @@ async function createCSSRules(rule) {
               });
               props = propsN.trim();
             }
-            let propArr = props.split(/\s*;\s*/).map((i) => i.split(/\s*:\s*/));
+
+            let propArr = props.sup
+              ? props.split(/\s*;\s*/).map((i) => i.split(/\s*:\s*/)) // from string
+              : Object.entries(props);
             if (newRule.rule != "") {
               newRule.prop = propArr;
               ruleOriginal.push(newRule);
@@ -816,10 +818,8 @@ async function createCSSRules(rule) {
                 return a.toUpperCase();
               })
               .replace(/-/g, "");
-            console.log(ruleO.rule);
-            ruleO.rule.cssRules[0].style[prop] = await val.split(
-              / *!(?=important)/
-            );
+              console.log(ruleO.rule);
+            ruleO.rule.cssRules[0].style[prop] = val.split(/ *!(?=important)/);
             console.log(ruleO.rule.cssRules[0]);
           }
         }
@@ -842,49 +842,19 @@ async function createCSSRules(rule) {
   }
 }
 function HexToRGB(Hex) {
-  let rgb;
-  if (!Hex.includes("rgb") && !Hex.includes("rgba")) {
-    let HexNoCat = Hex.replace("#", "");
-    rgb =
-      HexNoCat.length !== 3 && HexNoCat.length === 8
-        ? [
-            parseInt(HexNoCat.substr(0, 2), 16),
-            parseInt(HexNoCat.substr(2, 2), 16),
-            parseInt(HexNoCat.substr(4, 2), 16),
-            parseInt(((HexNoCat.substr(6, 2), 16) / 255).toFixed(2)),
-          ]
-        : HexNoCat.length !== 3 && HexNoCat.length === 6
-        ? [
-            parseInt(HexNoCat.substr(0, 2), 16),
-            parseInt(HexNoCat.substr(2, 2), 16),
-            parseInt(HexNoCat.substr(4, 2), 16),
-          ]
-        : HexNoCat.length !== 3 && HexNoCat.length === 4
-        ? [
-            parseInt(HexNoCat.substr(0, 2), 16),
-            parseInt(HexNoCat.substr(1, 2), 16),
-            parseInt(HexNoCat.substr(2, 2), 16),
-            parseInt(((HexNoCat.substr(3, 2), 16) / 255).toFixed(2)),
-          ]
-        : [
-            parseInt(HexNoCat.substr(0, 1) + HexNoCat.substr(0, 1), 16),
-            parseInt(HexNoCat.substr(1, 1) + HexNoCat.substr(1, 1), 16),
-            parseInt(HexNoCat.substr(2, 1) + HexNoCat.substr(2, 1), 16),
-          ];
-  } else {
-    rgb = Hex.split("(")[1].split(",")[4]
+  let HexNoCat = Hex.replace("#", "");
+  let rgb =
+    HexNoCat.length !== 3
       ? [
-          parseInt(Hex.split("(")[1].split(",")[0]),
-          parseInt(Hex.split("(")[1].split(",")[1]),
-          parseInt(Hex.split("(")[1].split(",")[2]),
-          parseInt(Hex.split("(")[1].split(",")[3]),
+          parseInt(HexNoCat.substr(0, 2), 16),
+          parseInt(HexNoCat.substr(2, 2), 16),
+          parseInt(HexNoCat.substr(4, 2), 16),
         ]
       : [
-          parseInt(Hex.split("(")[1].split(",")[0]),
-          parseInt(Hex.split("(")[1].split(",")[1]),
-          parseInt(Hex.split("(")[1].split(",")[2]),
+          parseInt(HexNoCat.substr(0, 1) + HexNoCat.substr(0, 1), 16),
+          parseInt(HexNoCat.substr(1, 1) + HexNoCat.substr(1, 1), 16),
+          parseInt(HexNoCat.substr(2, 1) + HexNoCat.substr(2, 1), 16),
         ];
-  }
   return rgb;
 }
 function shadeTintColor(rgb, percent) {
@@ -906,7 +876,6 @@ function shadeTintColor(rgb, percent) {
       : rgb[2] === 255 && percent < 0
       ? 239
       : rgb[2];
-  var A = rgb[3] ? (rgb[3] * 255).toString(16) : "FF";
   R = parseInt((R * (100 + percent)) / 100);
   G = parseInt((G * (100 + percent)) / 100);
   B = parseInt((B * (100 + percent)) / 100);
@@ -916,16 +885,12 @@ function shadeTintColor(rgb, percent) {
   var RR = R.toString(16).length == 1 ? "0" + R.toString(16) : R.toString(16);
   var GG = G.toString(16).length == 1 ? "0" + G.toString(16) : G.toString(16);
   var BB = B.toString(16).length == 1 ? "0" + B.toString(16) : B.toString(16);
-  var AA = A.toString(16).length == 1 ? "0" + A.toString(16) : A.toString(16);
-  return "#" + RR + GG + BB + AA;
+  return "#" + RR + GG + BB;
 }
 async function pushColors(newColors) {
   try {
     await Object.keys(newColors).forEach((key) => {
-      colors[key] = newColors[key].replace(
-        "!important" || "!default" || /\s+/g,
-        ""
-      );
+      colors[key] = newColors[key];
     });
     await Object.keys(colors).forEach((key) => {
       if (!colorsNames.includes(key)) {

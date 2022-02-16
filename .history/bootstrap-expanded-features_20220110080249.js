@@ -132,10 +132,13 @@ async function cssCreate() {
           befStringed += `{bottom:${value};}`;
           break;
         case "end":
-          befStringed += `{right:${value};}`;
+          befStringed += `{left:${value};}`;
           break;
         case "start":
-          befStringed += `{left:${value};}`;
+          befStringed += `{right:${value};}`;
+          break;
+        case "bot":
+          befStringed += `{bottom:${value};}`;
           break;
         case "fs":
           befStringed += `{font-size:${value};}`;
