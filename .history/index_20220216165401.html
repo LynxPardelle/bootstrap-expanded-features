@@ -15,7 +15,7 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./style.css" />
 
     <meta name="og:type" content="website." />
 
@@ -243,7 +243,7 @@
               <a class="nav-link" href="#backgroundHTU">Background</a>
               <ul class="nav ms-4 flex-column bef bef-link-futurePop">
                 <li class="nav-item">
-                  <a class="nav-link" href="#hoverBGHTU">Hover</a>
+                  <a class="nav-link" href="#opacityBGHTU">Hover</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="#activeBGHTU">Active</a>
@@ -499,7 +499,7 @@
               <span
                 class="bef bef-fs-2rem text-end d-block bef-mx-2rem bef-mt-1rem"
               >
-                "per" : "%"
+                "per": "%"
               </span>
               <br />
               <span class="bef bef-mx-2rem">
@@ -516,7 +516,7 @@
               <span
                 class="bef bef-fs-2rem text-end d-block bef-mx-2rem bef-mt-1rem"
               >
-                "MIN" : "-"
+                "MIN": "-"
               </span>
               <br />
               <span class="bef bef-mx-2rem">
@@ -533,7 +533,7 @@
               <span
                 class="bef bef-fs-2rem text-end d-block bef-mx-2rem bef-mt-1rem"
               >
-                "_" : "."
+                "_": "."
               </span>
               <br />
               <span class="bef bef-mx-2rem">
@@ -550,7 +550,7 @@
               <span
                 class="bef bef-fs-2rem text-end d-block bef-mx-2rem bef-mt-1rem"
               >
-                "__" : " "
+                "__": " "
               </span>
               <br />
               <span class="bef bef-mx-2rem">
@@ -569,7 +569,7 @@
               <span
                 class="bef bef-fs-2rem text-end d-block bef-mx-2rem bef-my-1rem"
               >
-                "COM" : " , "
+                "COM": " , "
               </span>
               <br />
               <span class="bef bef-mx-2rem">
@@ -585,25 +585,6 @@
                 box-shadow: 0 2px 4px #D6BCFF , inset 2px 0 4px #D680FF
               </span>
             </li>
-            <li class="list-group-item">
-              <span
-                class="bef bef-fs-2rem text-end d-block bef-mx-2rem bef-my-1rem"
-              >
-                "__OPA" : " OPA"
-              </span>
-              <br />
-              <span class="bef bef-mx-2rem">
-                You can use it to active a opacity mode of a color, example:
-              </span>
-              <br />
-              <span
-                class="text-center d-block mx-auto bef bef-text-blood bef-my-1rem"
-              >
-                bef-bg-fairy__OPA__0_5 =
-                <br />
-                background-color: rgba(214, 128, 255, 0.5)
-              </span>
-            </li>
           </ul>
         </article>
         <!-- BackgroundHTU -->
@@ -611,8 +592,8 @@
           <a id="backgroundHTU"></a>
           <h3>Background</h3>
           <p class="mt-4 mb-3 text-start bef bef-link-futurePop">
-            We can use some new colors and even put your own colors, but there
-            is more, now you can put different colors in the different
+            Now we can use some new colors and even put your own colors, but
+            there is more, now you can put different colors in the different
             breakpoint that bootstrap has.
             <br />
             You can watch what colors are available
@@ -624,126 +605,7 @@
           </p>
           <p class="mt-4 mb-3 text-start bef bef-link-futurePop">
             To use the background you need to use the class bef-bg- and add a
-            color like in the following example:
-          </p>
-          <div
-            class="d-flex flex-column flex-sm-row mb-5 justify-content-evenly"
-          >
-            <div>
-              <h5 class="text-center my-3">Example</h5>
-              <p class="text-light bef bef-bg-indigo">
-                Box with indigo background.
-              </p>
-            </div>
-            <div>
-              <h5 class="text-center my-3">Code</h5>
-              <p
-                class="d-inline-block p-2 bef bef-m-0rem__2rem bef-bg-futurePop__OPA__0_03"
-              >
-                <code class="text-dark">
-                  <span class="text-primary">
-                    &#60;p class=<span class="text-danger"
-                      >"text-light bef bef-bg-indigo"</span
-                    >
-                    &#62;
-                  </span>
-                  <br />
-                  &ensp;Box with indigo background.
-                  <br />
-                  <span class="text-primary"> &#60;&#47;p&#62; </span>
-                </code>
-              </p>
-            </div>
-          </div>
-          <!-- Hover Background -->
-          <a id="hoverBGHTU"></a>
-          <h3>Hover background</h3>
-          <p class="mt-4 mb-3 text-start bef bef-link-futurePop">
-            We can use colors in the background only when the item has a hover
-            state, like in the following example:
-          </p>
-          <div
-            class="d-flex flex-column flex-sm-row mb-5 justify-content-evenly"
-          >
-            <div>
-              <h5 class="text-center my-3">Example</h5>
-              <p class="text-light bef bef-bg-indigo bef-bgHover-mystic">
-                Box with indigo background and a mystic background on hover.
-              </p>
-            </div>
-            <div>
-              <h5 class="text-center my-3">Code</h5>
-              <p
-                class="d-inline-block p-2 bef bef-m-0rem__2rem bef-bg-futurePop__OPA__0_03"
-              >
-                <code class="text-dark">
-                  <span class="text-primary">
-                    &#60;p class=<span class="text-danger"
-                      >"text-light bef bef-bg-indigo bef-bgHover-mystic"</span
-                    >
-                    &#62;
-                  </span>
-                  <br />
-                  &ensp;Box with indigo background and a mystic background on
-                  hover.
-                  <br />
-                  <span class="text-primary"> &#60;&#47;p&#62; </span>
-                </code>
-              </p>
-            </div>
-          </div>
-          <!-- Active Background -->
-          <a id="activeBGHTU"></a>
-          <h3>Active background</h3>
-          <p class="mt-4 mb-3 text-start bef bef-link-futurePop">
-            We can use colors in the background only when the item has an active
-            state, like in the following example:
-          </p>
-          <div
-            class="d-flex flex-column flex-sm-row mb-5 justify-content-evenly"
-          >
-            <div>
-              <h5 class="text-center my-3">Example</h5>
-              <p class="text-light bef bef-bg-indigo bef-bgActive-mystic">
-                Box with indigo background and a mystic background on active.
-              </p>
-            </div>
-            <div>
-              <h5 class="text-center my-3">Code</h5>
-              <p
-                class="d-inline-block p-2 bef bef-m-0rem__2rem bef-bg-futurePop__OPA__0_03"
-              >
-                <code class="text-dark">
-                  <span class="text-primary">
-                    &#60;p class=<span class="text-danger"
-                      >"text-light bef bef-bg-indigo bef-bgActive-mystic"</span
-                    >
-                    &#62;
-                  </span>
-                  <br />
-                  &ensp;Box with indigo background and a mystic background on
-                  active.
-                  <br />
-                  <span class="text-primary"> &#60;&#47;p&#62; </span>
-                </code>
-              </p>
-            </div>
-          </div>
-        </article>
-        <!-- BorderHTU -->
-        <article>
-          <a id="borderHTU"></a>
-          <h3>Border</h3>
-          <p class="mt-4 mb-3 text-start bef bef-link-futurePop">
-            You can put borders in an element with only 3 classes, but you can
-            use more to get more personalization, we will check the 3 types of
-            border classes first, then we will se some examples.
-          </p>
-          <h4>Border Width</h4>
-          <p class="mt-3 mb-3 text-start bef bef-link-futurePop">
-            You can put borders in an element with only 3 classes, but you can
-            use more to get more personalization, we will check the 3 types of
-            border classes first, then we will se some examples.
+            custom size like in the following examples:
           </p>
         </article>
       </section>

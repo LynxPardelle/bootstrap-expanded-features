@@ -43,7 +43,7 @@ async function cssCreate() {
     let sheets = [...document.styleSheets];
     let filetedSheet = [];
     for (let sheet of sheets) {
-      if (sheet.href?.includes("styles")) {
+      if (sheet.href?.includes("style")) {
         filetedSheet.push(sheet);
       }
     }
@@ -102,9 +102,6 @@ async function cssCreate() {
       value = await value.replace(/per/g, "%");
       value = await value.replace(/COM/g, " , ");
       value = await value.replace(/MIN/g, "-");
-      value = await value.replace(/SD/g, '(');
-      value = await value.replace(/ED/g, ')');
-      value = await value.replace(/HASH/g, '#');
       value = await value.replace(/__/g, " ");
       value = await value.replace(/_/g, ".");
       switch (befSplited[1]) {

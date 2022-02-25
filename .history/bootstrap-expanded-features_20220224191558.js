@@ -102,9 +102,6 @@ async function cssCreate() {
       value = await value.replace(/per/g, "%");
       value = await value.replace(/COM/g, " , ");
       value = await value.replace(/MIN/g, "-");
-      value = await value.replace(/SD/g, '(');
-      value = await value.replace(/ED/g, ')');
-      value = await value.replace(/HASH/g, '#');
       value = await value.replace(/__/g, " ");
       value = await value.replace(/_/g, ".");
       switch (befSplited[1]) {
