@@ -44,7 +44,7 @@ async function cssCreate() {
     let filetedSheet = [];
     for (let sheet of sheets) {
       console.log(sheet);
-      if (sheet.href?.includes("bef-styles")) {
+      if (sheet.href?.includes("styles")) {
         filetedSheet.push(sheet);
       }
     }
@@ -68,6 +68,7 @@ async function cssCreate() {
     for (let bef of befs) {
       let befStringed = "." + bef;
       if (alreadyCreatedClasses.includes(befStringed)) {
+        console.log("continue");
         continue;
       }
       alreadyCreatedClasses.push(befStringed);
@@ -81,13 +82,12 @@ async function cssCreate() {
           .filter((i) => i)
           .pop()
       ) {
+        console.log("continue");
         continue;
       }
       let befSplited = await bef.split("-");
       let hasBP = false;
-      let property = befSplited[1];
       let value = "";
-      let secondValue = "";
       if (
         befSplited[2] === "sm" ||
         befSplited[2] === "md" ||
@@ -97,10 +97,8 @@ async function cssCreate() {
       ) {
         hasBP = true;
         value = befSplited[3];
-        secondValue = befSplited[4];
       } else if (befSplited[2]) {
         value = befSplited[2];
-        secondValue = befSplited[3];
       }
       value = await value.replace(/per/g, "%");
       value = await value.replace(/COM/g, " , ");
@@ -110,7 +108,7 @@ async function cssCreate() {
       value = await value.replace(/HASH/g, "#");
       value = await value.replace(/__/g, " ");
       value = await value.replace(/_/g, ".");
-      switch (property) {
+      switch (befSplited[1]) {
         case "w":
           befStringed += `{width:${value};}`;
           break;
@@ -245,46 +243,39 @@ async function cssCreate() {
           break;
       }
       if (
-        (property === "bg" ||
-          property === "bgHover" ||
-          property === "bgActive" ||
-          property === "text" ||
-          property === "textHover" ||
-          property === "textActive" ||
-          property === "link" ||
-          property === "linkHover" ||
-          property === "linkActive" ||
-          property === "borderColor" ||
-          property === "borderColort" ||
-          property === "borderColorb" ||
-          property === "borderColors" ||
-          property === "borderColore" ||
-          property === "borderColorx" ||
-          property === "borderColory" ||
-          property === "btn" ||
-          property === "btnOutline" ||
-          property === "boxShadow" ||
-          property === "textShadow") &&
+        (befSplited[1] === "bg" ||
+          befSplited[1] === "bgHover" ||
+          befSplited[1] === "bgActive" ||
+          befSplited[1] === "text" ||
+          befSplited[1] === "textHover" ||
+          befSplited[1] === "textActive" ||
+          befSplited[1] === "link" ||
+          befSplited[1] === "linkHover" ||
+          befSplited[1] === "linkActive" ||
+          befSplited[1] === "borderColor" ||
+          befSplited[1] === "borderColort" ||
+          befSplited[1] === "borderColorb" ||
+          befSplited[1] === "borderColors" ||
+          befSplited[1] === "borderColore" ||
+          befSplited[1] === "borderColorx" ||
+          befSplited[1] === "borderColory" ||
+          befSplited[1] === "btn" ||
+          befSplited[1] === "btnOutline" ||
+          befSplited[1] === "boxShadow" ||
+          befSplited[1] === "textShadow") &&
         (colorsNames.includes(value) ||
-          (value.split(" ")[0] && colorsNames.includes(value.split(" ")[0])) ||
-          (value.split(" ")[1] && colorsNames.includes(value.split(" ")[1])) ||
-          (value.split(" ")[2] && colorsNames.includes(value.split(" ")[2])) ||
-          (value.split(" ")[3] && colorsNames.includes(value.split(" ")[3])) ||
-          (value.split(" ")[4] && colorsNames.includes(value.split(" ")[4]))) &&
-        (!secondValue ||
-          colorsNames.includes(secondValue) ||
-          (secondValue.split(" ")[0] &&
-            colorsNames.includes(secondValue.split(" ")[0])) ||
-          (secondValue.split(" ")[1] &&
-            colorsNames.includes(secondValue.split(" ")[1])) ||
-          (secondValue.split(" ")[2] &&
-            colorsNames.includes(secondValue.split(" ")[2])) ||
-          (secondValue.split(" ")[3] &&
-            colorsNames.includes(secondValue.split(" ")[3])) ||
-          (secondValue.split(" ")[4] &&
-            colorsNames.includes(secondValue.split(" ")[4])))
+          (colorsNames.includes(value.split(" ")[0]) &&
+            colorsNames.includes(value.split(" ")[0])) ||
+          (colorsNames.includes(value.split(" ")[1]) &&
+            colorsNames.includes(value.split(" ")[1])) ||
+          (colorsNames.includes(value.split(" ")[2]) &&
+            colorsNames.includes(value.split(" ")[2])) ||
+          (colorsNames.includes(value.split(" ")[3]) &&
+            colorsNames.includes(value.split(" ")[3])) ||
+          (colorsNames.includes(value.split(" ")[4]) &&
+            colorsNames.includes(value.split(" ")[4])))
       ) {
-        switch (property) {
+        switch (befSplited[1]) {
           case "bg":
             if (value.includes(" OPA")) {
               befStringed += `{background-color: rgba(${await HexToRGB(
@@ -544,7 +535,7 @@ async function cssCreate() {
               befStringed += `{
                 color: rgba(${await HexToRGB(
                   colors[value.split(" ")[0]]
-                ).toString()}, ${value.split(" ")[2]});
+                ).toString()}, ${value.split(" ")[2]}) !important;
                 border-color: rgba(${await HexToRGB(
                   colors[value.split(" ")[0]]
                 ).toString()}, ${value.split(" ")[2]});}
@@ -552,17 +543,6 @@ async function cssCreate() {
                   background-color: rgba(${await HexToRGB(
                     colors[value.split(" ")[0]]
                   ).toString()}, ${value.split(" ")[2]});
-                  ${
-                    secondValue
-                      ? `color: ${
-                          secondValue.includes("OPA")
-                            ? `rgba(${await HexToRGB(
-                                colors[secondValue.split(" ")[0]]
-                              ).toString()}, ${secondValue.split(" ")[2]})`
-                            : colors[secondValue]
-                        };`
-                      : ""
-                  }
                 border-color: rgba(${await HexToRGB(
                   await shadeTintColor(
                     await HexToRGB(colors[value.split(" ")[0]]),
@@ -603,21 +583,10 @@ async function cssCreate() {
               }`;
             } else {
               befStringed += `{
-                color:${colors[value]};
+                color:${colors[value]} !important;
                   border-color:${colors[value]};}
                 /.${bef}:hover{
                   background-color:${colors[value]};
-                  ${
-                    secondValue
-                      ? `color: ${
-                          secondValue.includes("OPA")
-                            ? `rgba(${await HexToRGB(
-                                colors[secondValue.split(" ")[0]]
-                              ).toString()}, ${secondValue.split(" ")[2]})`
-                            : colors[secondValue]
-                        };`
-                      : ""
-                  }
                   border-color:${await shadeTintColor(
                     await HexToRGB(colors[value]),
                     -20
@@ -685,16 +654,6 @@ async function cssCreate() {
             }
             befStringed += `{text-shadow:${value} !important;}`;
             break;
-        }
-      }
-      for (let cssProperty of befStringed.split(";")) {
-        if (!cssProperty.includes("!important")) {
-          if (cssProperty.length > 1) {
-            befStringed = befStringed.replace(
-              cssProperty,
-              cssProperty + " !important"
-            );
-          }
         }
       }
       if (befStringed.includes("{") && befStringed.includes("}")) {
@@ -777,21 +736,17 @@ async function cssCreate() {
 async function createCSSRules(rule) {
   try {
     let sheets = [...document.styleSheets];
-    let filetedSheet = [];
-    for (let sheet of sheets) {
-      if (sheet.href?.includes("bef-styles")) {
-        filetedSheet.push(sheet);
-      }
-    }
-    sheets = filetedSheet;
+
     let sheet;
     if (sheets[sheets.length - 1]) {
-      sheet = sheets[sheets.length - 1];
+      sheet = await sheets[sheets.length - 1];
     } else {
       sheet = sheets.pop();
     }
+
     let ruleI;
     ruleI = rule;
+
     let selector = "";
     let props = "";
     let propsArr = [];

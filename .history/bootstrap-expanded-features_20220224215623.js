@@ -44,7 +44,7 @@ async function cssCreate() {
     let filetedSheet = [];
     for (let sheet of sheets) {
       console.log(sheet);
-      if (sheet.href?.includes("bef-styles")) {
+      if (sheet.href?.includes("styles")) {
         filetedSheet.push(sheet);
       }
     }
@@ -68,6 +68,7 @@ async function cssCreate() {
     for (let bef of befs) {
       let befStringed = "." + bef;
       if (alreadyCreatedClasses.includes(befStringed)) {
+        console.log("continue");
         continue;
       }
       alreadyCreatedClasses.push(befStringed);
@@ -81,6 +82,7 @@ async function cssCreate() {
           .filter((i) => i)
           .pop()
       ) {
+        console.log("continue");
         continue;
       }
       let befSplited = await bef.split("-");
@@ -687,16 +689,6 @@ async function cssCreate() {
             break;
         }
       }
-      for (let cssProperty of befStringed.split(";")) {
-        if (!cssProperty.includes("!important")) {
-          if (cssProperty.length > 1) {
-            befStringed = befStringed.replace(
-              cssProperty,
-              cssProperty + " !important"
-            );
-          }
-        }
-      }
       if (befStringed.includes("{") && befStringed.includes("}")) {
         if (hasBP === true) {
           befStringed = befStringed.replace(/\//g, "");
@@ -777,21 +769,17 @@ async function cssCreate() {
 async function createCSSRules(rule) {
   try {
     let sheets = [...document.styleSheets];
-    let filetedSheet = [];
-    for (let sheet of sheets) {
-      if (sheet.href?.includes("bef-styles")) {
-        filetedSheet.push(sheet);
-      }
-    }
-    sheets = filetedSheet;
+
     let sheet;
     if (sheets[sheets.length - 1]) {
-      sheet = sheets[sheets.length - 1];
+      sheet = await sheets[sheets.length - 1];
     } else {
       sheet = sheets.pop();
     }
+
     let ruleI;
     ruleI = rule;
+
     let selector = "";
     let props = "";
     let propsArr = [];

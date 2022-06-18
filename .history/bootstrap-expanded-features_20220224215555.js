@@ -44,7 +44,7 @@ async function cssCreate() {
     let filetedSheet = [];
     for (let sheet of sheets) {
       console.log(sheet);
-      if (sheet.href?.includes("bef-styles")) {
+      if (sheet.href?.includes("styles")) {
         filetedSheet.push(sheet);
       }
     }
@@ -68,6 +68,7 @@ async function cssCreate() {
     for (let bef of befs) {
       let befStringed = "." + bef;
       if (alreadyCreatedClasses.includes(befStringed)) {
+        console.log("continue");
         continue;
       }
       alreadyCreatedClasses.push(befStringed);
@@ -81,6 +82,7 @@ async function cssCreate() {
           .filter((i) => i)
           .pop()
       ) {
+        console.log("continue");
         continue;
       }
       let befSplited = await bef.split("-");
@@ -562,7 +564,7 @@ async function cssCreate() {
                             : colors[secondValue]
                         };`
                       : ""
-                  }
+                  };
                 border-color: rgba(${await HexToRGB(
                   await shadeTintColor(
                     await HexToRGB(colors[value.split(" ")[0]]),
@@ -607,17 +609,7 @@ async function cssCreate() {
                   border-color:${colors[value]};}
                 /.${bef}:hover{
                   background-color:${colors[value]};
-                  ${
-                    secondValue
-                      ? `color: ${
-                          secondValue.includes("OPA")
-                            ? `rgba(${await HexToRGB(
-                                colors[secondValue.split(" ")[0]]
-                              ).toString()}, ${secondValue.split(" ")[2]})`
-                            : colors[secondValue]
-                        };`
-                      : ""
-                  }
+                  color: ${colors[secondValue]};
                   border-color:${await shadeTintColor(
                     await HexToRGB(colors[value]),
                     -20
@@ -685,16 +677,6 @@ async function cssCreate() {
             }
             befStringed += `{text-shadow:${value} !important;}`;
             break;
-        }
-      }
-      for (let cssProperty of befStringed.split(";")) {
-        if (!cssProperty.includes("!important")) {
-          if (cssProperty.length > 1) {
-            befStringed = befStringed.replace(
-              cssProperty,
-              cssProperty + " !important"
-            );
-          }
         }
       }
       if (befStringed.includes("{") && befStringed.includes("}")) {
@@ -777,21 +759,17 @@ async function cssCreate() {
 async function createCSSRules(rule) {
   try {
     let sheets = [...document.styleSheets];
-    let filetedSheet = [];
-    for (let sheet of sheets) {
-      if (sheet.href?.includes("bef-styles")) {
-        filetedSheet.push(sheet);
-      }
-    }
-    sheets = filetedSheet;
+
     let sheet;
     if (sheets[sheets.length - 1]) {
-      sheet = sheets[sheets.length - 1];
+      sheet = await sheets[sheets.length - 1];
     } else {
       sheet = sheets.pop();
     }
+
     let ruleI;
     ruleI = rule;
+
     let selector = "";
     let props = "";
     let propsArr = [];

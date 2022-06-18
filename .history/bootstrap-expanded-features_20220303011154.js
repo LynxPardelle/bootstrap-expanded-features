@@ -777,21 +777,17 @@ async function cssCreate() {
 async function createCSSRules(rule) {
   try {
     let sheets = [...document.styleSheets];
-    let filetedSheet = [];
-    for (let sheet of sheets) {
-      if (sheet.href?.includes("bef-styles")) {
-        filetedSheet.push(sheet);
-      }
-    }
-    sheets = filetedSheet;
+
     let sheet;
     if (sheets[sheets.length - 1]) {
-      sheet = sheets[sheets.length - 1];
+      sheet = await sheets[sheets.length - 1];
     } else {
       sheet = sheets.pop();
     }
+
     let ruleI;
     ruleI = rule;
+
     let selector = "";
     let props = "";
     let propsArr = [];
