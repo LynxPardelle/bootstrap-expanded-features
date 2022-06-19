@@ -175,12 +175,6 @@ async function cssCreate() {
         case "gap":
           befStringed += `{gap:${value};}`;
           break;
-        case "rowGap":
-          befStringed += `{row-gap:${value};}`;
-          break;
-        case "columnGap":
-          befStringed += `{column-gap:${value};}`;
-          break;
         case "p":
           befStringed += `{padding:${value};}`;
           break;
@@ -785,7 +779,7 @@ async function cssCreate() {
         } milliseconds`
       );
       befTimer.innerHTML = `
-      <p class="my-0">
+      <p>
       Call to cssCreate() took ${
         endTimeCSSCreate - startTimeCSSCreate
       } milliseconds

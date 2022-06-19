@@ -785,7 +785,7 @@ async function cssCreate() {
         } milliseconds`
       );
       befTimer.innerHTML = `
-      <p class="my-0">
+      <p>
       Call to cssCreate() took ${
         endTimeCSSCreate - startTimeCSSCreate
       } milliseconds
