@@ -520,11 +520,11 @@ async function cssCreate() {
                 rgba(${await HexToRGB(
                   await shadeTintColor(
                     await HexToRGB(colors[value.split(" ")[0]]),
-                    3,
-                    false
+                    3
                   )
                 )}, ${value.split(" ")[2]})
-              ;}`;
+              ;
+            }`;
             } else {
               befStringed += `{
                 background-color:${colors[value]};
@@ -556,7 +556,7 @@ async function cssCreate() {
               ;}
               /.btn-check:checked + .btn-check:focus, .btn-check:active + .${bef}:focus, .${bef}:active:focus, .${bef}:active:focus, .show > .${bef}.dropdown-toggle:focus{box-shadow: 0 0 0 0.25rem 
                 rgba(${await HexToRGB(
-                  await shadeTintColor(await HexToRGB(colors[value]), 3, false)
+                  await shadeTintColor(await HexToRGB(colors[value]), 3)
                 )}, 0.5)
               ;}`;
             }
@@ -618,11 +618,11 @@ async function cssCreate() {
                   rgba(${await HexToRGB(
                     await shadeTintColor(
                       await HexToRGB(colors[value.split(" ")[0]]),
-                      3,
-                      false
+                      3
                     )
                   )}, ${value.split(" ")[2]})
-                ;}`;
+                ;
+              }`;
             } else {
               befStringed += `{
                 color:${colors[value]};
@@ -662,11 +662,7 @@ async function cssCreate() {
                 /.btn-check:checked + .btn-check:focus, .btn-check:active + .${bef}:focus, .${bef}:active:focus, .${bef}:active:focus, .show > .${bef}.dropdown-toggle:focus{
                   box-shadow: 0 0 0 0.25rem 
                   rgba(${await HexToRGB(
-                    await shadeTintColor(
-                      await HexToRGB(colors[value]),
-                      3,
-                      false
-                    )
+                    await shadeTintColor(await HexToRGB(colors[value]), 3)
                   )}, 0.5)
                 ;}`;
             }
@@ -714,14 +710,13 @@ async function cssCreate() {
         }
       }
       for (let cssProperty of befStringed.split(";")) {
-        if (
-          !cssProperty.includes("!important") &&
-          cssProperty.length > 5
-        ) {
-          befStringed = befStringed.replace(
-            cssProperty,
-            cssProperty + " !important"
-          );
+        if (!cssProperty.includes("!important")) {
+          if (cssProperty.length > 1) {
+            befStringed = befStringed.replace(
+              cssProperty,
+              cssProperty + " !important"
+            );
+          }
         }
       }
       if (befStringed.includes("{") && befStringed.includes("}")) {
@@ -992,9 +987,10 @@ function HexToRGB(Hex) {
           parseInt(Hex.split("(")[1].split(",")[2]),
         ];
   }
+  console.log(Hex + " " + rgb);
   return rgb;
 }
-function shadeTintColor(rgb, percent, aNeed = true) {
+function shadeTintColor(rgb, percent) {
   var R =
     rgb[0] === 0 && percent > 0
       ? 16
@@ -1024,9 +1020,7 @@ function shadeTintColor(rgb, percent, aNeed = true) {
   var GG = G.toString(16).length == 1 ? "0" + G.toString(16) : G.toString(16);
   var BB = B.toString(16).length == 1 ? "0" + B.toString(16) : B.toString(16);
   var AA = A.toString(16).length == 1 ? "0" + A.toString(16) : A.toString(16);
-  var returnString =
-    aNeed === true ? "#" + RR + GG + BB + AA : "#" + RR + GG + BB;
-  return returnString;
+  return "#" + RR + GG + BB + AA;
 }
 async function pushColors(newColors) {
   try {

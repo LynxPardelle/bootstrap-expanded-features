@@ -716,8 +716,10 @@ async function cssCreate() {
       for (let cssProperty of befStringed.split(";")) {
         if (
           !cssProperty.includes("!important") &&
-          cssProperty.length > 5
+          cssProperty.length > 2 &&
+          !cssProperty.includes(" }")
         ) {
+          console.log(cssProperty);
           befStringed = befStringed.replace(
             cssProperty,
             cssProperty + " !important"
