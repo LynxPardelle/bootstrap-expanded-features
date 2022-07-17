@@ -15,7 +15,7 @@ Too many new features for bootstrap made with javascript for better performance 
 
 ## 😭 The problem <a name = “problem”></a>
 
-Bootstrap doesn't support options of they classes like w-33 to have width: 33%; on an element or things more especific like h-20vh to have an element with: height 20vh;, that can be more efficient and responsive and whenever we need those, we need to get it though a css style sheet and thats not the main point of using Bootstrap.
+Bootstrap doesn't support options of their classes like w-33 to have width: 33%; on an element or things more especific like h-20vh to have an element with: height 20vh;, that can be more efficient and responsive and whenever we need those, we need to get it though a css style sheet and thats not the main point of using Bootstrap.
 
 First I tried to make a library for sass to get to many more options for the classes but there was one problem, it was an 50mb size file after beeing compiled, and we know that 50mb its a large file to be downloaded only to use a few classes that are on the file, but then I get one idea that can let anybody to get all the css that they want without having all the options that they dont use and having the option to create more colors that can be used with bg-newcolorname to get background-color: newcolor; and many more options.
 
@@ -24,7 +24,7 @@ We can now use this js library that creates all the css with the classes that ar
 
 ## 🏁 Getting Started <a name = “about”></a>
 
-A tutorial will be ready soon, but you can download this repo and see the usage on the index.html.
+You can check the full tutorial on this [link](https://bootstrap-expanded-features.vercel.app/)
 
 ## ⛏️ More Information <a name = “more_info”></a>
 
