@@ -43,7 +43,6 @@ async function cssCreate() {
     let sheets = [...document.styleSheets];
     let filetedSheet = [];
     for (let sheet of sheets) {
-      console.log(sheet);
       if (sheet.href?.includes("bef-styles")) {
         filetedSheet.push(sheet);
       }
@@ -520,11 +519,11 @@ async function cssCreate() {
                 rgba(${await HexToRGB(
                   await shadeTintColor(
                     await HexToRGB(colors[value.split(" ")[0]]),
-                    3, false
+                    3,
+                    false
                   )
                 )}, ${value.split(" ")[2]})
-              ;
-            }`;
+              ;}`;
             } else {
               befStringed += `{
                 background-color:${colors[value]};
@@ -618,11 +617,11 @@ async function cssCreate() {
                   rgba(${await HexToRGB(
                     await shadeTintColor(
                       await HexToRGB(colors[value.split(" ")[0]]),
-                      3, false
+                      3,
+                      false
                     )
                   )}, ${value.split(" ")[2]})
-                ;
-              }`;
+                ;}`;
             } else {
               befStringed += `{
                 color:${colors[value]};
@@ -662,7 +661,11 @@ async function cssCreate() {
                 /.btn-check:checked + .btn-check:focus, .btn-check:active + .${bef}:focus, .${bef}:active:focus, .${bef}:active:focus, .show > .${bef}.dropdown-toggle:focus{
                   box-shadow: 0 0 0 0.25rem 
                   rgba(${await HexToRGB(
-                    await shadeTintColor(await HexToRGB(colors[value]), 3, false)
+                    await shadeTintColor(
+                      await HexToRGB(colors[value]),
+                      3,
+                      false
+                    )
                   )}, 0.5)
                 ;}`;
             }
@@ -710,12 +713,14 @@ async function cssCreate() {
         }
       }
       for (let cssProperty of befStringed.split(";")) {
-        if (!cssProperty.includes("!important") && cssProperty.length > 2 && !cssProperty.includes(" }")) {
-            console.log(cssProperty);
-            befStringed = befStringed.replace(
-              cssProperty,
-              cssProperty + " !important"
-            );
+        if (
+          !cssProperty.includes("!important") &&
+          cssProperty.length > 5
+        ) {
+          befStringed = befStringed.replace(
+            cssProperty,
+            cssProperty + " !important"
+          );
         }
       }
       if (befStringed.includes("{") && befStringed.includes("}")) {
@@ -778,7 +783,7 @@ async function cssCreate() {
     var endTimeCSSCreate = performance.now();
     let befTimer = document.getElementById("befTimer");
     if (befTimer) {
-      console.log(
+      console.info(
         `Call to cssCreate() took ${
           endTimeCSSCreate - startTimeCSSCreate
         } milliseconds`
@@ -792,7 +797,7 @@ async function cssCreate() {
       `;
     }
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 }
 async function createCSSRules(rule) {
@@ -908,25 +913,19 @@ async function createCSSRules(rule) {
     ) {
       if (ruleOriginal[0]) {
         for (let ruleO of ruleOriginal) {
-          console.log(ruleO);
           for (let [prop, val] of ruleO.prop) {
-            console.log(prop);
-            console.log(val);
             prop = prop
               .replace(/-(.)/g, (a) => {
                 return a.toUpperCase();
               })
               .replace(/-/g, "");
-            console.log(ruleO.rule);
             ruleO.rule.cssRules[0].style[prop] = await val.split(
               / *!(?=important)/
             );
-            console.log(ruleO.rule.cssRules[0]);
           }
         }
       } else {
         for (let [prop, val] of propsArr) {
-          console.log(prop);
           prop = prop
             .replace(/-(.)/g, (a) => {
               return a.toUpperCase();
@@ -939,7 +938,7 @@ async function createCSSRules(rule) {
       await sheet.insertRule(ruleI, sheet.cssRules.length);
     }
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 }
 function HexToRGB(Hex) {
@@ -1018,7 +1017,8 @@ function shadeTintColor(rgb, percent, aNeed = true) {
   var GG = G.toString(16).length == 1 ? "0" + G.toString(16) : G.toString(16);
   var BB = B.toString(16).length == 1 ? "0" + B.toString(16) : B.toString(16);
   var AA = A.toString(16).length == 1 ? "0" + A.toString(16) : A.toString(16);
-  var returnString = aNeed === true ? "#" + RR + GG + BB + AA : "#" + RR + GG + BB;
+  var returnString =
+    aNeed === true ? "#" + RR + GG + BB + AA : "#" + RR + GG + BB;
   return returnString;
 }
 async function pushColors(newColors) {
@@ -1035,7 +1035,7 @@ async function pushColors(newColors) {
       }
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 }
 if (window) {
