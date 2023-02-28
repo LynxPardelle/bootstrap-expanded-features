@@ -313,6 +313,29 @@ let timer = null;
 let timesCSSCreated = 0;
 let timesCSSNeedsToCreate = 0;
 let timeBetweenReCreate = 300;
+let pseudoClasses =
+  "Active/Checked/Default/Dir/Disabled/Empty/Enabled/First/FirstChild/FirstOfType/Fullscreen/Focus/Hover/Indeterminate/InRange/Invalid/Lang/LastChild/LastOfType/Left/Link/Not/NthChild/NthLastChild/NthLastOfType/NthOfType/OnlyChild/OnlyOfType/Optional/OutOfRange/ReadOnly/ReadWrite/Required/Right/Root/Scope/Target/Valid/Visited".split(
+    "/"
+  );
+let pseudoElements =
+  "After/Before/FirstLetter/FirstLine/Selection/Backdrop/Placeholder/Marker/SpellingError/GrammarError".split(
+    "/"
+  );
+let pseudos = pseudoClasses
+  .map((pse) => {
+    return {
+      mask: pse,
+      real: `/:${camelToCSSValid(pse)}`,
+    };
+  })
+  .concat(
+    pseudoElements.map((pse) => {
+      return {
+        mask: pse,
+        real: `/::${camelToCSSValid(pse)}`,
+      };
+    })
+  );
 let sheets = [...document.styleSheets];
 for (let nSheet of sheets) {
   if (nSheet.href?.includes("bef-styles")) {
@@ -411,6 +434,7 @@ async function doCssCreate(updateBefs = null) {
         .replace(/SD/g, "(")
         .replace(/ED/g, ")")
         .replace(/HASH/g, "#")
+        .replace(/SLASH/g, "/")
         .replace(/__/g, " ")
         .replace(/_/g, ".");
       consoleLog("info", { value: value }, styleConsole);
@@ -455,118 +479,42 @@ async function doCssCreate(updateBefs = null) {
       }
       switch (true) {
         case !!cssNamesParsed[
-          befSplited[1]
-            .replace("Hover", "")
-            .replace("Active", "")
-            .replace("Focus", "")
-            .replace("Visited", "")
-            .replace("Target", "")
-            .replace("FocusWithin", "")
-            .replace("FocusVisible", "")
-            .toString()
+          removePseudos(befSplited[1]).split("/")[0].toString()
         ]:
           if (
             typeof cssNamesParsed[
-              befSplited[1]
-                .replace("Hover", "")
-                .replace("Active", "")
-                .replace("Focus", "")
-                .replace("Visited", "")
-                .replace("Target", "")
-                .replace("FocusWithin", "")
-                .replace("FocusVisible", "")
-                .toString()
+              removePseudos(befSplited[1]).split("/")[0].toString()
             ] === "string"
           ) {
             befStringed += `${
-              befSplited[1].includes("Hover")
-                ? ":hover"
-                : befSplited[1].includes("Active")
-                ? ":active"
-                : befSplited[1].includes("Focus")
-                ? ":focus"
-                : befSplited[1].includes("Visited")
-                ? ":visited"
-                : befSplited[1].includes("Target")
-                ? ":target"
-                : befSplited[1].includes("FocusWithin")
-                ? ":focus-within"
-                : befSplited[1].includes("FocusVisible")
-                ? ":focusVisible"
+              !!removePseudos(befSplited[1]).split("/")[1]
+                ? removePseudos(befSplited[1]).split("/")[1]
                 : ""
             }{${
               cssNamesParsed[
-                befSplited[1]
-                  .replace("Hover", "")
-                  .replace("Active", "")
-                  .replace("Focus", "")
-                  .replace("Visited", "")
-                  .replace("Target", "")
-                  .replace("FocusWithin", "")
-                  .replace("FocusVisible", "")
-                  .toString()
+                removePseudos(befSplited[1]).split("/")[0].toString()
               ]
             }:${value};}`;
           } else {
             befStringed += `${
-              befSplited[1].includes("Hover")
-                ? ":hover"
-                : befSplited[1].includes("Active")
-                ? ":active"
-                : befSplited[1].includes("Focus")
-                ? ":focus"
-                : befSplited[1].includes("Visited")
-                ? ":visited"
-                : befSplited[1].includes("Target")
-                ? ":target"
-                : befSplited[1].includes("FocusWithin")
-                ? ":focus-within"
-                : befSplited[1].includes("FocusVisible")
-                ? ":focusVisible"
+              !!removePseudos(befSplited[1]).split("/")[1]
+                ? removePseudos(befSplited[1]).split("/")[1]
                 : ""
             }{${
               cssNamesParsed[
-                befSplited[1]
-                  .replace("Hover", "")
-                  .replace("Active", "")
-                  .replace("Focus", "")
-                  .replace("Visited", "")
-                  .replace("Target", "")
-                  .replace("FocusWithin", "")
-                  .replace("FocusVisible", "")
-                  .toString()
+                removePseudos(befSplited[1]).split("/")[0].toString()
               ][0]
             }:${value};${
               cssNamesParsed[
-                befSplited[1]
-                  .replace("Hover", "")
-                  .replace("Active", "")
-                  .replace("Focus", "")
-                  .replace("Visited", "")
-                  .replace("Target", "")
-                  .replace("FocusWithin", "")
-                  .replace("FocusVisible", "")
-                  .toString()
+                removePseudos(befSplited[1]).split("/")[0].toString()
               ][1]
             }:${value};}`;
           }
           break;
         case befSplited[1].startsWith("link"):
           befStringed += ` a${
-            befSplited[1].includes("Hover")
-              ? ":hover"
-              : befSplited[1].includes("Active")
-              ? ":active"
-              : befSplited[1].includes("Focus")
-              ? ":focus"
-              : befSplited[1].includes("Visited")
-              ? ":visited"
-              : befSplited[1].includes("Target")
-              ? ":target"
-              : befSplited[1].includes("FocusWithin")
-              ? ":focus-within"
-              : befSplited[1].includes("FocusVisible")
-              ? ":focusVisible"
+            !!removePseudos(befSplited[1]).split("/")[1]
+              ? removePseudos(befSplited[1]).split("/")[1]
               : ""
           }{color:${value} !important;}`;
           break;
@@ -617,8 +565,13 @@ async function doCssCreate(updateBefs = null) {
                     ;}`;
           break;
         default:
-          befStringed += `{${await camelToCSSValid(befSplited[1])}:${value};}`;
-          console.log(await camelToCSSValid(befSplited[1]));
+          befStringed += `${
+            removePseudos(befSplited[1]).split("/")[1]
+              ? removePseudos(befSplited[1]).split("/")[1]
+              : ""
+          }{${camelToCSSValid(
+            removePseudos(befSplited[1]).split("/")[0]
+          )}:${value};}`;
           break;
       }
       for (let cssProperty of befStringed.split(";")) {
@@ -663,7 +616,7 @@ async function doCssCreate(updateBefs = null) {
           );
         }
         createCSSRules(
-          `@media only screen and (min-width: ${b.value}) {${b.bef}}`
+          `@media only screen and (min-width: ${b.value}) {html ${b.bef}}`
         );
         b.bef = "";
       }
@@ -774,6 +727,7 @@ function createCSSRules(rule, update = false) {
     consoleLog("error", { err: err }, styleConsole);
   }
 }
+
 function HexToRGB(Hex) {
   let rgb = [];
   if (!Hex.includes("rgb") && !Hex.includes("rgba")) {
@@ -820,6 +774,7 @@ function HexToRGB(Hex) {
   }
   return rgb;
 }
+
 function shadeTintColor(rgb, percent) {
   let R =
     rgb[0] === 0 && percent > 0
@@ -857,13 +812,31 @@ function shadeTintColor(rgb, percent) {
   }
 }
 
-async function cssValidToCamel(st) {
+function removePseudos(thing, remove = false) {
+  let pseudoFiltereds = pseudos.filter((pseudo) => {
+    return thing.includes(pseudo.mask);
+  });
+  let pseudoFinded;
+  pseudoFiltereds.forEach((pse) => {
+    if (!pseudoFinded || pse.mask.length > pseudoFinded.mask.length) {
+      pseudoFinded = pse;
+    }
+  });
+  return !!pseudoFinded
+    ? thing
+        .replace("SD", "(")
+        .replace("ED", ")")
+        .replace(pseudoFinded.mask, !remove ? pseudoFinded.real : "")
+    : thing;
+}
+
+function cssValidToCamel(st) {
   return st.replace(/([-_][a-z])/gi, ($1) => {
     return $1.toUpperCase().replace("-", "").replace("_", "");
   });
 }
 
-async function camelToCSSValid(st) {
+function camelToCSSValid(st) {
   return st
     .replace(/[\w]([A-Z])/g, (m) => {
       return m[0] + "-" + m[1];
@@ -1017,21 +990,21 @@ function consoleLog(
   thing,
   style = styleConsole,
   line = null,
-  stoper = false
+  stoper = isDebug
 ) {
   consoleParser({
     type: type,
     thing: thing,
     style: style,
     line: line,
-    stoper: false,
+    stoper: stoper,
   });
 }
 
 function consoleParser(config) {
   config.type = config.type ? config.type : "log";
   config.style = config.style ? config.style : styleConsole;
-  config.stoper = config.stoper ? config.stoper : false;
+  config.stoper = config.stoper ? config.stoper : isDebug;
   if (config.stoper === false) {
     if (config.line) {
       console.info("%cline: " + config.line + " = ", config.style);
