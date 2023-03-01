@@ -392,9 +392,7 @@ async function doCssCreate(updateBefs = null) {
     } else {
       befs = updateBefs;
     }
-    if (isDebug === true) {
-      consoleLog("info", { befs: befs }, styleConsole);
-    }
+    consoleLog("info", { befs: befs }, styleConsole);
     let befsStringed = "";
     let bpsStringed = bps.map((b) => b);
     for (let bef of befs) {
@@ -473,10 +471,8 @@ async function doCssCreate(updateBefs = null) {
       }
       value = values.value;
       secondValue = values.secondValue;
-      if (isDebug === true) {
-        consoleLog("info", { value: value }, styleConsole);
-        consoleLog("info", { secondValue: secondValue }, styleConsole);
-      }
+      consoleLog("info", { value: value }, styleConsole);
+      consoleLog("info", { secondValue: secondValue }, styleConsole);
       switch (true) {
         case !!cssNamesParsed[
           removePseudos(befSplited[1]).split("/")[0].toString()
@@ -597,9 +593,7 @@ async function doCssCreate(updateBefs = null) {
       }
     }
     if (befsStringed !== "") {
-      if (isDebug === true) {
-        consoleLog("info", { befsStringed: befsStringed }, styleConsole);
-      }
+      consoleLog("info", { befsStringed: befsStringed }, styleConsole);
       for (let bef of befsStringed.split("/")) {
         if (bef !== "") {
           createCSSRules(bef);
@@ -608,13 +602,11 @@ async function doCssCreate(updateBefs = null) {
     }
     bpsStringed.forEach((b) => {
       if (b.bef !== "") {
-        if (isDebug === true) {
-          consoleLog(
-            "info",
-            { bp: b.bp, value: b.value, bef: b.bef },
-            styleConsole
-          );
-        }
+        consoleLog(
+          "info",
+          { bp: b.bp, value: b.value, bef: b.bef },
+          styleConsole
+        );
         createCSSRules(
           `@media only screen and (min-width: ${b.value}) {html ${b.bef}}`
         );
@@ -622,15 +614,13 @@ async function doCssCreate(updateBefs = null) {
       }
     });
     const endTimeCSSCreate = performance.now();
-    if (isDebug === true) {
-      consoleLog(
-        "info",
-        `Call to cssCreate() took ${
-          endTimeCSSCreate - startTimeCSSCreate
-        } milliseconds`,
-        styleConsole
-      );
-    }
+    consoleLog(
+      "info",
+      `Call to cssCreate() took ${
+        endTimeCSSCreate - startTimeCSSCreate
+      } milliseconds`,
+      styleConsole
+    );
     let befTimer = document.getElementById("befTimer");
     if (befTimer) {
       befTimer.innerHTML = `
@@ -648,9 +638,7 @@ async function doCssCreate(updateBefs = null) {
 
 function createCSSRules(rule, update = false) {
   try {
-    if (isDebug === true) {
-      consoleLog("info", { rule: rule }, styleConsole);
-    }
+    consoleLog("info", { rule: rule }, styleConsole);
     if (rule && !rule.split("{")[0].includes("@media")) {
       let index;
       let originalRule = [...sheet.cssRules].some((cssRule, i) => {
@@ -873,9 +861,7 @@ function pushColors(newColors) {
 }
 
 function getColors() {
-  if (isDebug === true) {
-    consoleLog("info", { colors: colors }, styleConsole);
-  }
+  consoleLog("info", { colors: colors }, styleConsole);
   return colors;
 }
 
@@ -888,13 +874,7 @@ function getColorsNames() {
 }
 
 function getColorValue(color) {
-  if (isDebug === true) {
-    consoleLog(
-      "info",
-      { color: color, colorValue: colors[color] },
-      styleConsole
-    );
-  }
+  consoleLog("info", { color: color, colorValue: colors[color] }, styleConsole);
   return colors[color];
 }
 
@@ -933,19 +913,15 @@ function deleteColor(color) {
 
 function clearAllColors() {
   colors = {};
-  if (isDebug === true) {
-    consoleLog("info", { colors: colors }, styleConsole);
-  }
+  consoleLog("info", { colors: colors }, styleConsole);
 }
 
 function getAlreadyCreatedClasses() {
-  if (isDebug === true) {
-    consoleLog(
-      "info",
-      { alreadyCreatedClasses: alreadyCreatedClasses },
-      styleConsole
-    );
-  }
+  consoleLog(
+    "info",
+    { alreadyCreatedClasses: alreadyCreatedClasses },
+    styleConsole
+  );
   return alreadyCreatedClasses;
 }
 
@@ -955,9 +931,7 @@ function updateClasses(classesToUpdate) {
 
 function getSheet() {
   if (sheet) {
-    if (isDebug === true) {
-      consoleLog("info", { sheet: sheet }, styleConsole);
-    }
+    consoleLog("info", { sheet: sheet }, styleConsole);
     return sheet;
   } else {
     return "";
@@ -990,7 +964,7 @@ function consoleLog(
   thing,
   style = styleConsole,
   line = null,
-  stoper = isDebug
+  stoper = !isDebug
 ) {
   consoleParser({
     type: type,
@@ -1004,7 +978,7 @@ function consoleLog(
 function consoleParser(config) {
   config.type = config.type ? config.type : "log";
   config.style = config.style ? config.style : styleConsole;
-  config.stoper = config.stoper ? config.stoper : isDebug;
+  config.stoper = config.stoper ? config.stoper : !isDebug;
   if (config.stoper === false) {
     if (config.line) {
       console.info("%cline: " + config.line + " = ", config.style);
