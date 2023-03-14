@@ -322,6 +322,11 @@ let pseudoElements =
     "/"
   );
 let pseudos = pseudoClasses
+  .sort((e1, e2) => {
+    e1 = e1.toString().length;
+    e2 = e2.toString().length;
+    return e1 > e2 ? 1 : e1 < e2 ? -1 : 0;
+  })
   .map((pse) => {
     return {
       mask: pse,
@@ -409,6 +414,38 @@ async function doCssCreate(updateBefs = null) {
       }
       let befStringed = "." + bef;
       let befSplited = bef.split("-");
+      let befSRP = removePseudos(befSplited[1]).replace(/SEL/g, "/").split("/");
+      let selector = befSRP[0];
+      let specify = befSRP
+        .map((bs, i) => {
+          if (i !== 0) {
+            return bs;
+          } else {
+            return "";
+          }
+        })
+        .join("")
+        .replace(/per/g, "%")
+        .replace(/COM/g, " , ")
+        .replace(/CSP/g, `'`)
+        .replace(/CDB/g, `"`)
+        .replace(/MIN/g, "-")
+        .replace(/PLUS/g, "+")
+        .replace(/SD/g, "(")
+        .replace(/ED/g, ")")
+        .replace(/SE/g, "[")
+        .replace(/EE/g, "]")
+        .replace(/HASH/g, "#")
+        .replace(/SLASH/g, "/")
+        .replace(/__/g, " ")
+        .replace(/_/g, ".")
+        .replace(/CHILD/g, " > ")
+        .replace(/ADJ/g, " + ")
+        .replace(/SIBL/g, " ~ ")
+        .replace(/ALL/g, "*")
+        .replace(/EQ/g, "=")
+        .replace(/ST/g, "^")
+        .replace(/INC/g, "$");
       let hasBP = false;
       let value = "";
       let secondValue = "";
@@ -474,45 +511,19 @@ async function doCssCreate(updateBefs = null) {
       consoleLog("info", { value: value }, styleConsole);
       consoleLog("info", { secondValue: secondValue }, styleConsole);
       switch (true) {
-        case !!cssNamesParsed[
-          removePseudos(befSplited[1]).split("/")[0].toString()
-        ]:
-          if (
-            typeof cssNamesParsed[
-              removePseudos(befSplited[1]).split("/")[0].toString()
-            ] === "string"
-          ) {
-            befStringed += `${
-              !!removePseudos(befSplited[1]).split("/")[1]
-                ? removePseudos(befSplited[1]).split("/")[1]
-                : ""
-            }{${
-              cssNamesParsed[
-                removePseudos(befSplited[1]).split("/")[0].toString()
-              ]
+        case !!cssNamesParsed[selector.toString()]:
+          if (typeof cssNamesParsed[selector.toString()] === "string") {
+            befStringed += `${specify}{${
+              cssNamesParsed[selector.toString()]
             }:${value};}`;
           } else {
-            befStringed += `${
-              !!removePseudos(befSplited[1]).split("/")[1]
-                ? removePseudos(befSplited[1]).split("/")[1]
-                : ""
-            }{${
-              cssNamesParsed[
-                removePseudos(befSplited[1]).split("/")[0].toString()
-              ][0]
-            }:${value};${
-              cssNamesParsed[
-                removePseudos(befSplited[1]).split("/")[0].toString()
-              ][1]
-            }:${value};}`;
+            befStringed += `${specify}{${
+              cssNamesParsed[selector.toString()][0]
+            }:${value};${cssNamesParsed[selector.toString()][1]}:${value};}`;
           }
           break;
         case befSplited[1].startsWith("link"):
-          befStringed += ` a${
-            !!removePseudos(befSplited[1]).split("/")[1]
-              ? removePseudos(befSplited[1]).split("/")[1]
-              : ""
-          }{color:${value} !important;}`;
+          befStringed += ` a${specify}{color:${value} !important;}`;
           break;
         case befSplited[1] === "btn":
           befStringed += `{
@@ -561,13 +572,7 @@ async function doCssCreate(updateBefs = null) {
                     ;}`;
           break;
         default:
-          befStringed += `${
-            removePseudos(befSplited[1]).split("/")[1]
-              ? removePseudos(befSplited[1]).split("/")[1]
-              : ""
-          }{${camelToCSSValid(
-            removePseudos(befSplited[1]).split("/")[0]
-          )}:${value};}`;
+          befStringed += `${specify}{${camelToCSSValid(selector)}:${value};}`;
           break;
       }
       for (let cssProperty of befStringed.split(";")) {
@@ -804,18 +809,14 @@ function removePseudos(thing, remove = false) {
   let pseudoFiltereds = pseudos.filter((pseudo) => {
     return thing.includes(pseudo.mask);
   });
-  let pseudoFinded;
   pseudoFiltereds.forEach((pse) => {
-    if (!pseudoFinded || pse.mask.length > pseudoFinded.mask.length) {
-      pseudoFinded = pse;
-    }
+    let regMask = new RegExp(":*" + pse.mask, "gi");
+    thing = thing
+      .replace("SD", "(")
+      .replace("ED", ")")
+      .replace(regMask, !remove ? pse.real : "");
   });
-  return !!pseudoFinded
-    ? thing
-        .replace("SD", "(")
-        .replace("ED", ")")
-        .replace(pseudoFinded.mask, !remove ? pseudoFinded.real : "")
-    : thing;
+  return thing;
 }
 
 function cssValidToCamel(st) {
