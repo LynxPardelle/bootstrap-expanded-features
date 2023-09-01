@@ -394,10 +394,13 @@ let lastTimeAsked2Create = new Date().getTime();
 let timesCSSCreated = 0;
 let timeBetweenReCreate = 400;
 let useTimer = true;
-let sheets = [...document.styleSheets];
-for (let nSheet of sheets) {
-  if (nSheet.href?.includes("bef-styles")) {
-    sheet = nSheet;
+checkSheet();
+function checkSheet() {
+  let sheets = [...document.styleSheets];
+  for (let nsheet of sheets) {
+    if (nsheet.href?.includes("bef-styles")) {
+      sheet = nsheet;
+    }
   }
 }
 pushColors(allColors);
@@ -405,6 +408,7 @@ function cssCreate(updateBefs = null, primordial = false) {
   if (!!useTimer) {
     DoUseTimer(updateBefs, primordial);
   } else {
+    checkSheet();
     doCssCreate(updateBefs);
   }
 }
@@ -440,12 +444,7 @@ function tas(updateBefs = null, primordial = false) {
 async function doCssCreate(updateBefs = null) {
   try {
     if (!sheet) {
-      let sheets = [...document.styleSheets];
-      for (let nSheet of sheets) {
-        if (nSheet.href?.includes("bef-styles")) {
-          sheet = nSheet;
-        }
-      }
+      await checkSheet();
       if (!sheet) {
         console.log("sheet", sheet);
         throw new Error("There is no bef-styles style sheet!");
@@ -561,9 +560,7 @@ async function doCssCreate(updateBefs = null) {
                   let combosCreatedABBR = Object.keys(combosCreated);
                   consoleLog(
                     "info",
-                    {
-                      combosCreatedABBR: combosCreatedABBR,
-                    },
+                    { combosCreatedABBR: combosCreatedABBR },
                     styleConsole
                   );
                   let alreadyABBRCombo = combosCreatedABBR.find((cs) => {
@@ -571,9 +568,7 @@ async function doCssCreate(updateBefs = null) {
                   });
                   consoleLog(
                     "info",
-                    {
-                      alreadyABBRCombo: alreadyABBRCombo,
-                    },
+                    { alreadyABBRCombo: alreadyABBRCombo },
                     styleConsole
                   );
                   let combosCreatedLenght = combosCreatedABBR.length;
@@ -590,72 +585,102 @@ async function doCssCreate(updateBefs = null) {
                   }
                   consoleLog(
                     "info",
-                    {
-                      combosCreatedABBR: combosCreatedABBR,
-                    },
+                    { combosCreatedABBR: combosCreatedABBR },
                     styleConsole
                   );
                   let comboABBR =
                     "■■■" +
                     (combosCreatedLenght !== 0 ? combosCreatedLenght - 1 : 0);
-                  consoleLog(
-                    "info",
-                    {
-                      comboABBR: comboABBR,
-                    },
-                    styleConsole
+                  consoleLog("info", { comboABBR: comboABBR }, styleConsole);
+                  consoleLog("info", { c: c }, styleConsole);
+                  let pseudos = pseudos.filter((p) =>
+                    c.split("-")[1].includes(p.mask)
                   );
-                  consoleLog(
-                    "info",
-                    {
-                      c: c,
-                    },
-                    styleConsole
-                  );
-                  if (!!c.split("-")[1]?.includes("SEL")) {
-                    consoleLog(
-                      "info",
-                      {
-                        cIncludesSEL: c,
-                      },
-                      styleConsole
-                    );
-                    c = c.replace("SEL", "SEL__COM_" + comboABBR + "__");
-                    consoleLog(
-                      "info",
-                      {
-                        cIncludesSELAfter: c,
-                      },
-                      styleConsole
-                    );
-                  } else {
-                    consoleLog(
-                      "info",
-                      {
-                        cDoesntIncludesSEL: c,
-                      },
-                      styleConsole
-                    );
-                    c = c.replace(
-                      c.split("-")[1],
-                      c.split("-")[1] + "SEL__COM_" + comboABBR
-                    );
-                    consoleLog(
-                      "info",
-                      {
-                        cDoesntIncludesSELAfter: c,
-                      },
-                      styleConsole
-                    );
+                  let firstPseudo =
+                    pseudos.sort((p1, p2) => {
+                      return c.indexOf(p1.mask) - c.indexOf(p2.mask);
+                    })[0] || -1;
+
+                  switch (true) {
+                    case pseudos.length > 0 &&
+                      !!(
+                        !c.includes("SEL") ||
+                        c.indexOf("SEL") > c.indexOf(firstPseudo.mask)
+                      ):
+                      consoleLog(
+                        "info",
+                        { firstPseudo: firstPseudo },
+                        styleConsole
+                      );
+                      c = c
+                        .replace("SEL", "")
+                        .replace(
+                          firstPseudo.mask,
+                          "SEL__COM_" + comboABBR + firstPseudo.mask
+                        );
+                      consoleLog(
+                        "info",
+                        { cIncludesPseudoAfter: c },
+                        styleConsole
+                      );
+                      break;
+                    case !!c.includes("SEL"):
+                      c = c.replace("SEL", "SEL__COM_" + comboABBR + "__");
+                      consoleLog(
+                        "info",
+                        { cIncludesSELAfter: c },
+                        styleConsole
+                      );
+                      break;
+                    default:
+                      consoleLog(
+                        "info",
+                        { cDoesntIncludesSEL: c },
+                        styleConsole
+                      );
+                      c = c.replace(
+                        c.split("-")[1],
+                        c.split("-")[1] + "SEL__COM_" + comboABBR
+                      );
+                      consoleLog(
+                        "info",
+                        { cDoesntIncludesSELAfter: c },
+                        styleConsole
+                      );
+                      break;
                   }
+                  /* if (!!c.includes('SEL')) {
+                      if (
+                        pseudos.length > 0 &&
+                        !!(c.indexOf('SEL') > c.indexOf(firstPseudo.mask))
+                      ) {
+                        c = c
+                          .replace('SEL', '')
+                          .replace(
+                            firstPseudo.mask,
+                            'SEL__COM_' + comboABBR + firstPseudo.mask
+                          );
+                      } else {
+                        c = c.replace('SEL', 'SEL__COM_' + comboABBR + '__');
+                      }
+                    } else {
+                      if (pseudos.length > 0) {
+                        let firstPseudo = pseudos.sort((p1, p2) => {
+                          return c.indexOf(p1.mask) - c.indexOf(p2.mask);
+                        })[0];
+                        c = c.replace(
+                          firstPseudo.mask,
+                          'SEL__COM_' + comboABBR + firstPseudo.mask
+                        );
+                      } else {
+                        c = c.replace(
+                          c.split('-')[1],
+                          c.split('-')[1] + 'SEL__COM_' + comboABBR
+                        );
+                      }
+                    } */
                 } else {
-                  consoleLog(
-                    "info",
-                    {
-                      cDoesntStartsWithBef: c,
-                    },
-                    styleConsole
-                  );
+                  consoleLog("info", { cDoesntStartsWithBef: c }, styleConsole);
                   befElement.classList.add(c);
                 }
                 if (!befs.includes(c)) {
@@ -988,7 +1013,7 @@ async function doCssCreate(updateBefs = null) {
     );
   }
 }
-function createCSSRules(rule, update = false) {
+function createCSSRules(rule) {
   try {
     consoleLog(
       "info",
@@ -1136,28 +1161,28 @@ function HexToRGB(Hex) {
     rgb =
       HexNoCat.length !== 3 && HexNoCat.length === 8
         ? [
-            parseInt(HexNoCat.substr(0, 2), 16),
-            parseInt(HexNoCat.substr(2, 2), 16),
-            parseInt(HexNoCat.substr(4, 2), 16),
-            parseInt(((HexNoCat.substr(6, 2), 16) / 255).toFixed(2)),
+            parseInt(HexNoCat.slice(0, 2), 16),
+            parseInt(HexNoCat.slice(2, 2), 16),
+            parseInt(HexNoCat.slice(4, 2), 16),
+            parseInt(((HexNoCat.slice(6, 2), 16) / 255).toFixed(2)),
           ]
         : HexNoCat.length !== 3 && HexNoCat.length === 6
         ? [
-            parseInt(HexNoCat.substr(0, 2), 16),
-            parseInt(HexNoCat.substr(2, 2), 16),
-            parseInt(HexNoCat.substr(4, 2), 16),
+            parseInt(HexNoCat.slice(0, 2), 16),
+            parseInt(HexNoCat.slice(2, 2), 16),
+            parseInt(HexNoCat.slice(4, 2), 16),
           ]
         : HexNoCat.length !== 3 && HexNoCat.length === 4
         ? [
-            parseInt(HexNoCat.substr(0, 2), 16),
-            parseInt(HexNoCat.substr(1, 2), 16),
-            parseInt(HexNoCat.substr(2, 2), 16),
-            parseInt(((HexNoCat.substr(3, 2), 16) / 255).toFixed(2)),
+            parseInt(HexNoCat.slice(0, 2), 16),
+            parseInt(HexNoCat.slice(1, 2), 16),
+            parseInt(HexNoCat.slice(2, 2), 16),
+            parseInt(((HexNoCat.slice(3, 2), 16) / 255).toFixed(2)),
           ]
         : [
-            parseInt(HexNoCat.substr(0, 1) + HexNoCat.substr(0, 1), 16),
-            parseInt(HexNoCat.substr(1, 1) + HexNoCat.substr(1, 1), 16),
-            parseInt(HexNoCat.substr(2, 1) + HexNoCat.substr(2, 1), 16),
+            parseInt(HexNoCat.slice(0, 1) + HexNoCat.slice(0, 1), 16),
+            parseInt(HexNoCat.slice(1, 1) + HexNoCat.slice(1, 1), 16),
+            parseInt(HexNoCat.slice(2, 1) + HexNoCat.slice(2, 1), 16),
           ];
   } else {
     rgb = Hex.split("(")[1].split(",")[4]
@@ -1503,7 +1528,7 @@ function updateColor(color, value) {
     );
   }
 }
-function updateabreviationsClass(abreviationsClass, value) {
+function updateAbreviationsClass(abreviationsClass, value) {
   try {
     if (abreviationsClasses[abreviationsClass.toString()]) {
       abreviationsClasses[abreviationsClass] = value;
@@ -1531,7 +1556,7 @@ function updateabreviationsClass(abreviationsClass, value) {
     );
   }
 }
-function updateabreviationsValue(abreviationsValue, value) {
+function updateAbreviationsValue(abreviationsValue, value) {
   try {
     if (abreviationsValues[abreviationsValue.toString()]) {
       abreviationsValues[abreviationsValue] = value;
@@ -1559,7 +1584,7 @@ function updateabreviationsValue(abreviationsValue, value) {
     );
   }
 }
-function updateabreviationsCombo(combo, values) {
+function updateCombo(combo, values) {
   try {
     if (combos[combo.toString()]) {
       combos[combo] = values;
