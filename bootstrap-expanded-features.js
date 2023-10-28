@@ -836,12 +836,13 @@ async function doCssCreate(updateBefs = null) {
           let matches = values[v].match(reg);
           if (!!matches) {
             for (let match of matches) {
-              values[v] = values[v].replace(
-                match,
-                `rgba(${this.colorToRGB(
-                  this.colors[match.toString().replace(/\s/g, "")]
-                )})`
-              );
+              let realColor = this.colors[match.replace(/\s/g, "")];
+              if (realColor) {
+                values[v] = values[v].replace(
+                  match,
+                  `rgba(${this.colorToRGB(realColor)})`
+                );
+              }
             }
           }
         });
@@ -1198,29 +1199,34 @@ function createCSSRules(rule) {
   }
 }
 function colorToRGB(color) {
-  let rgb = [];
-  color = color.toLowerCase();
-  switch (true) {
-    case !!this.colors[color]:
-      rgb = this.colorToRGB(this.colors[color]);
-      break;
-    case color.includes("rgb") || color.includes("rgba"):
-      rgb = this.parseRGB(color);
-      break;
-    case color.includes("#"):
-      rgb = this.parseRGB(this.HexToRGB(color));
-      break;
-    case color.includes("hsl"):
-      rgb = this.parseRGB(this.HSLToRGB(color));
-      break;
-    case color.includes("hwb"):
-      rgb = this.parseRGB(this.HWBToRGB(color));
-      break;
-    default:
-      rgb = [255, 0, 0];
-      break;
+  try {
+    let rgb = [];
+    color = color.toLowerCase();
+    switch (true) {
+      case !!this.colors[color]:
+        rgb = this.colorToRGB(this.colors[color]);
+        break;
+      case color.includes("rgb") || color.includes("rgba"):
+        rgb = this.parseRGB(color);
+        break;
+      case color.includes("#"):
+        rgb = this.parseRGB(this.HexToRGB(color));
+        break;
+      case color.includes("hsl"):
+        rgb = this.parseRGB(this.HSLToRGB(color));
+        break;
+      case color.includes("hwb"):
+        rgb = this.parseRGB(this.HWBToRGB(color));
+        break;
+      default:
+        rgb = [255, 0, 0];
+        break;
+    }
+    return rgb;
+  } catch (error) {
+    this.consoleLog("error", { error: error }, this.styleConsole);
+    return [255, 0, 0];
   }
-  return rgb;
 }
 function RGBToRGBA(rgb, alpha) {
   return `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha})`;
