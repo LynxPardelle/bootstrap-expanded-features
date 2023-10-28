@@ -388,6 +388,7 @@ const pseudos = pseudoClasses
         };
       })
   );
+let importantActive = true;
 /* Time Management*/
 let lastCSSCreate = Date.now();
 let lastTimeAsked2Create = new Date().getTime();
@@ -443,10 +444,9 @@ function tas(updateBefs = null, primordial = false) {
 }
 async function doCssCreate(updateBefs = null) {
   try {
-    if (!sheet) {
-      await checkSheet();
-      if (!sheet) {
-        console.log("sheet", sheet);
+    if (!this.sheet) {
+      this.checkSheet();
+      if (!this.sheet) {
         throw new Error("There is no bef-styles style sheet!");
       }
     }
@@ -456,50 +456,38 @@ async function doCssCreate(updateBefs = null) {
       let befElements = document.getElementsByClassName("bef");
       for (let befElement of befElements) {
         befElement.classList.forEach((item) => {
-          let comb = Object.keys(combos).find((cs) => {
+          let comb = Object.keys(this.combos).find((cs) => {
             return item.includes(cs);
           });
           if (!!comb) {
-            if (combos[comb]) {
+            if (this.combos[comb]) {
               let vals = !!item.includes("VALS")
                 ? item.split("VALS")[1].split("VL")
                 : [];
-              combos[comb].forEach((c) => {
+              this.combos[comb].forEach((c) => {
                 let reg = new RegExp(/VAL[0-9]+(DEF[.]*DEF)?/, "g");
                 if (reg.test(c)) {
                   let matches = c.match(reg);
-                  consoleLog(
+                  this.consoleLog(
                     "info",
-                    {
-                      matches: matches,
-                    },
-                    styleConsole
+                    { matches: matches },
+                    this.styleConsole
                   );
                   if (!!matches) {
                     for (let match of matches) {
                       let val = parseInt(match.split("VAL")[1].split("DEF")[0]);
-                      consoleLog(
+                      this.consoleLog("info", { val: val }, this.styleConsole);
+                      this.consoleLog(
                         "info",
-                        {
-                          val: val,
-                        },
-                        styleConsole
-                      );
-                      consoleLog(
-                        "info",
-                        {
-                          match: match,
-                        },
-                        styleConsole
+                        { match: match },
+                        this.styleConsole
                       );
                       let pattern = `VAL${val}(DEF[.]*DEF)?`;
                       let nreg = new RegExp(pattern, "g");
-                      consoleLog(
+                      this.consoleLog(
                         "info",
-                        {
-                          nreg: nreg,
-                        },
-                        styleConsole
+                        { nreg: nreg },
+                        this.styleConsole
                       );
                       let def = match.split("DEF")[1];
                       if (
@@ -509,21 +497,17 @@ async function doCssCreate(updateBefs = null) {
                         vals[val] !== "DEF" &&
                         vals[val] !== "null"
                       ) {
-                        consoleLog(
+                        this.consoleLog(
                           "info",
-                          {
-                            valsval: vals[val],
-                          },
-                          styleConsole
+                          { vals_val: vals[val] },
+                          this.styleConsole
                         );
                         if (/VAL[0-9]+/.test(vals[val])) {
                           let valval = vals[val].replace("VAL", "");
-                          consoleLog(
+                          this.consoleLog(
                             "info",
-                            {
-                              valval: valval,
-                            },
-                            styleConsole
+                            { valval: valval },
+                            this.styleConsole
                           );
                           c = c.replace(
                             nreg,
@@ -535,21 +519,13 @@ async function doCssCreate(updateBefs = null) {
                           );
                         } else {
                           c = c.replace(nreg, vals[val]);
-                          consoleLog(
-                            "info",
-                            {
-                              c: c,
-                            },
-                            styleConsole
-                          );
+                          this.consoleLog("info", { c: c }, this.styleConsole);
                         }
                       } else {
-                        consoleLog(
+                        this.consoleLog(
                           "info",
-                          {
-                            def: def,
-                          },
-                          styleConsole
+                          { def: def },
+                          this.styleConsole
                         );
                         c = c.replace(nreg, def ? def : "");
                       }
@@ -557,43 +533,47 @@ async function doCssCreate(updateBefs = null) {
                   }
                 }
                 if (c.startsWith("bef")) {
-                  let combosCreatedABBR = Object.keys(combosCreated);
-                  consoleLog(
+                  let combosCreatedABBR = Object.keys(this.combosCreated);
+                  this.consoleLog(
                     "info",
                     { combosCreatedABBR: combosCreatedABBR },
-                    styleConsole
+                    this.styleConsole
                   );
                   let alreadyABBRCombo = combosCreatedABBR.find((cs) => {
-                    return combosCreated[cs] === item;
+                    return this.combosCreated[cs] === item;
                   });
-                  consoleLog(
+                  this.consoleLog(
                     "info",
                     { alreadyABBRCombo: alreadyABBRCombo },
-                    styleConsole
+                    this.styleConsole
                   );
                   let combosCreatedLenght = combosCreatedABBR.length;
                   if (!alreadyABBRCombo) {
-                    combosCreated["■■■" + combosCreatedLenght] = item;
-                    consoleLog(
+                    this.combosCreated["■■■" + combosCreatedLenght] = item;
+                    this.consoleLog(
                       "info",
                       {
                         cStartsWithBef:
-                          combosCreated["■■■" + combosCreatedLenght],
+                          this.combosCreated["■■■" + combosCreatedLenght],
                       },
-                      styleConsole
+                      this.styleConsole
                     );
                   }
-                  consoleLog(
+                  this.consoleLog(
                     "info",
                     { combosCreatedABBR: combosCreatedABBR },
-                    styleConsole
+                    this.styleConsole
                   );
                   let comboABBR =
                     "■■■" +
                     (combosCreatedLenght !== 0 ? combosCreatedLenght - 1 : 0);
-                  consoleLog("info", { comboABBR: comboABBR }, styleConsole);
-                  consoleLog("info", { c: c }, styleConsole);
-                  let pseudos = pseudos.filter((p) =>
+                  this.consoleLog(
+                    "info",
+                    { comboABBR: comboABBR },
+                    this.styleConsole
+                  );
+                  this.consoleLog("info", { c: c }, this.styleConsole);
+                  let pseudos = this.pseudos.filter((p) =>
                     c.split("-")[1].includes(p.mask)
                   );
                   let firstPseudo =
@@ -607,10 +587,10 @@ async function doCssCreate(updateBefs = null) {
                         !c.includes("SEL") ||
                         c.indexOf("SEL") > c.indexOf(firstPseudo.mask)
                       ):
-                      consoleLog(
+                      this.consoleLog(
                         "info",
                         { firstPseudo: firstPseudo },
-                        styleConsole
+                        this.styleConsole
                       );
                       c = c
                         .replace("SEL", "")
@@ -618,34 +598,34 @@ async function doCssCreate(updateBefs = null) {
                           firstPseudo.mask,
                           "SEL__COM_" + comboABBR + firstPseudo.mask
                         );
-                      consoleLog(
+                      this.consoleLog(
                         "info",
                         { cIncludesPseudoAfter: c },
-                        styleConsole
+                        this.styleConsole
                       );
                       break;
                     case !!c.includes("SEL"):
                       c = c.replace("SEL", "SEL__COM_" + comboABBR + "__");
-                      consoleLog(
+                      this.consoleLog(
                         "info",
                         { cIncludesSELAfter: c },
-                        styleConsole
+                        this.styleConsole
                       );
                       break;
                     default:
-                      consoleLog(
+                      this.consoleLog(
                         "info",
                         { cDoesntIncludesSEL: c },
-                        styleConsole
+                        this.styleConsole
                       );
                       c = c.replace(
                         c.split("-")[1],
                         c.split("-")[1] + "SEL__COM_" + comboABBR
                       );
-                      consoleLog(
+                      this.consoleLog(
                         "info",
                         { cDoesntIncludesSELAfter: c },
-                        styleConsole
+                        this.styleConsole
                       );
                       break;
                   }
@@ -680,7 +660,11 @@ async function doCssCreate(updateBefs = null) {
                       }
                     } */
                 } else {
-                  consoleLog("info", { cDoesntStartsWithBef: c }, styleConsole);
+                  this.consoleLog(
+                    "info",
+                    { cDoesntStartsWithBef: c },
+                    this.styleConsole
+                  );
                   befElement.classList.add(c);
                 }
                 if (!befs.includes(c)) {
@@ -692,7 +676,9 @@ async function doCssCreate(updateBefs = null) {
             !befs.includes(item) &&
             item !== "bef" &&
             (item.includes("bef") ||
-              Object.keys(abreviationsClasses).find((aC) => item.includes(aC)))
+              Object.keys(this.abreviationsClasses).find((aC) =>
+                item.includes(aC)
+              ))
           ) {
             befs.push(item);
           }
@@ -701,26 +687,20 @@ async function doCssCreate(updateBefs = null) {
     } else {
       befs = updateBefs;
     }
-    consoleLog(
-      "info",
-      {
-        befs: befs,
-      },
-      styleConsole
-    );
+    this.consoleLog("info", { befs: befs }, this.styleConsole);
     let befsStringed = "";
-    let bpsStringed = bps.map((b) => b);
+    let bpsStringed = this.bps.map((b) => b);
     for (let bef of befs) {
       if (!updateBefs) {
         if (
-          alreadyCreatedClasses.find((aC) => {
+          this.alreadyCreatedClasses.find((aC) => {
             return aC === bef;
           })
         ) {
           continue;
         }
         if (
-          [...sheet.cssRules].find((i) =>
+          [...this.sheet.cssRules].find((i) =>
             i.cssText.split(" ").find((aC) => {
               return aC.replace(".", "") === bef;
             })
@@ -730,48 +710,40 @@ async function doCssCreate(updateBefs = null) {
         }
       }
       if (
-        !alreadyCreatedClasses.find((aC) => {
+        !this.alreadyCreatedClasses.find((aC) => {
           return aC === bef;
         })
       ) {
-        alreadyCreatedClasses.push(bef);
+        this.alreadyCreatedClasses.push(bef);
       }
       let befStringed = "." + bef;
       if (!bef.includes("bef")) {
-        let abbrClss = Object.keys(abreviationsClasses).find((aC) =>
+        let abbrClss = Object.keys(this.abreviationsClasses).find((aC) =>
           bef.includes(aC)
         );
         if (!!abbrClss) {
-          bef = bef.replace(abbrClss, abreviationsClasses[abbrClss]);
+          bef = bef.replace(abbrClss, this.abreviationsClasses[abbrClss]);
         }
       }
       let befSplited = bef.split("-");
       /* if (befSplited[1].includes('SLASH')) {
-                debugger;
-              } */
+          debugger;
+        } */
       if (befSplited[1].includes("boxCustom")) {
-        consoleLog(
+        this.consoleLog(
           "info",
-          {
-            befSplited1: befSplited[1],
-          },
-          styleConsole
+          { befSplited1: befSplited[1] },
+          this.styleConsole
         );
       }
-      let befSRP = removePseudos(befSplited[1])
-        .replace(/SEL/g, separator)
-        .split(`${separator}`);
+      let befSRP = this.removePseudos(befSplited[1])
+        .replace(/SEL/g, this.separator)
+        .split(`${this.separator}`);
       if (befSplited[1].includes("boxCustom")) {
-        consoleLog(
-          "info",
-          {
-            befSRP: befSRP,
-          },
-          styleConsole
-        );
+        this.consoleLog("info", { befSRP: befSRP }, this.styleConsole);
       }
       let selector = befSRP[0];
-      let specify = unbefysize(
+      let specify = this.unbefysize(
         befSRP
           .map((bs, i) => {
             if (i !== 0) {
@@ -783,28 +755,29 @@ async function doCssCreate(updateBefs = null) {
           .join("")
       );
       if (!!specify) {
-        let alreadyABBRCombo = Object.keys(combosCreated).find((cs) =>
+        let alreadyABBRCombo = Object.keys(this.combosCreated).find((cs) =>
           specify.includes(cs)
         );
         if (!!alreadyABBRCombo) {
-          consoleLog(
+          this.consoleLog(
             "info",
-            {
-              OPalreadyABBRCombo: alreadyABBRCombo,
-            },
-            styleConsole
+            { OPalreadyABBRCombo: alreadyABBRCombo },
+            this.styleConsole
           );
           specify = specify.replace(
             alreadyABBRCombo,
-            combosCreated[alreadyABBRCombo]
+            this.combosCreated[alreadyABBRCombo]
           );
-          bef = bef.replace(alreadyABBRCombo, combosCreated[alreadyABBRCombo]);
+          bef = bef.replace(
+            alreadyABBRCombo,
+            this.combosCreated[alreadyABBRCombo]
+          );
         }
       }
       let hasBP = false;
       let value = "";
       let secondValue = "";
-      if (bps.find((b) => befSplited[2] === b.bp)) {
+      if (this.bps.find((b) => befSplited[2] === b.bp)) {
         hasBP = true;
         value = befSplited[3];
         secondValue = !!befSplited[4] ? befSplited[4] : "";
@@ -813,98 +786,135 @@ async function doCssCreate(updateBefs = null) {
         secondValue = !!befSplited[3] ? befSplited[3] : "";
       }
       /* befSplited[1] = befSplited[1]
-                .replace(/COM/g, ' , ')
-                .replace(/__/g, ' ')
-                .replace(/_/g, '.'); */
-      value = unbefysize(
-        !!abreviationsValues[value] ? abreviationsValues[value] : value
+          .replace(/COM/g, ' , ')
+          .replace(/__/g, ' ')
+          .replace(/_/g, '.'); */
+      value = this.unbefysize(
+        !!this.abreviationsValues[value]
+          ? this.abreviationsValues[value]
+          : value
       );
-      secondValue = unbefysize(
-        !!abreviationsValues[secondValue]
-          ? abreviationsValues[secondValue]
+      secondValue = this.unbefysize(
+        !!this.abreviationsValues[secondValue]
+          ? this.abreviationsValues[secondValue]
           : secondValue
       );
       let values = {
         value: value,
         secondValue: secondValue,
       };
-      for (let v in values) {
-        for (let i = 0; i < values[v].split(" ").length; i++) {
-          let sv = values[v].split(" ")[i];
-          let hasOPA = values[v].split(" ")[i + 1] === "OPA";
-          let OPA = values[v].split(" ")[i + 2];
-          values[v] =
-            !!hasOPA && !!OPA
-              ? values[v]
-                  .replace(
-                    sv,
-                    `rgba(${HexToRGB(
-                      colors[sv.toString()]
-                    ).toString()}, ${OPA})`
-                  )
-                  .split(` OPA ${OPA}`)[0]
-              : values[v].includes(" OPA")
-              ? values[v]
-                  .replace(
-                    sv,
-                    `rgba(${HexToRGB(colors[sv.toString()]).toString()}, ${
-                      values[v].split("OPA ")[1]
-                    })`
-                  )
-                  .split(" OPA")[0]
-              : !!colors[sv.toString()]
-              ? values[v].replace(sv, colors[sv.toString()])
-              : values[v];
-        }
+      if (!selector.includes("content")) {
+        Object.keys(values).forEach((v) => {
+          let hasOPA = values[v].includes("OPA");
+          if (!!hasOPA) {
+            const reg = new RegExp(
+              /(?:([A-z0-9#]*)|(?:(rgb)|(hsl)|(hwb))a?\([0-9\.\,\s%]*\))\s?OPA\s?0\.[0-9]*/gi
+            );
+            const OPAS = values[v].match(reg);
+            for (let OPA of OPAS) {
+              const color = OPA.split("OPA")[0];
+              const OPAValue = OPA.split("OPA")[1];
+              let realColor = `${this.colorToRGB(
+                !!this.colors[color.toString().replace(/\s/g, "")]
+                  ? this.colors[color.toString().replace(/\s/g, "")]
+                  : color
+              ).toString()}`;
+              values[v] = !!OPAValue
+                ? values[v]
+                    .replace(color, `rgba(${realColor},${OPAValue})`)
+                    .replace("OPA" + OPAValue, "")
+                : values[v];
+            }
+          }
+          let colors = Object.keys(this.colors)
+            .sort((c1, c2) => {
+              return c2.length - c1.length;
+            })
+            .map((c) => `(${c})`)
+            .join("|");
+          let reg = new RegExp("(?:" + colors + ")", "gi");
+          let matches = values[v].match(reg);
+          if (!!matches) {
+            for (let match of matches) {
+              values[v] = values[v].replace(
+                match,
+                `rgba(${this.colorToRGB(
+                  this.colors[match.toString().replace(/\s/g, "")]
+                )})`
+              );
+            }
+          }
+        });
       }
       value = values.value;
       secondValue = values.secondValue;
-      consoleLog(
+      this.consoleLog(
         "info",
-        {
-          value: value,
-          secondValue: secondValue,
-        },
-        styleConsole
+        { value: value, secondValue: secondValue },
+        this.styleConsole
       );
+      /* MatchForColors */
+      /* MatchForColorsEnd */
       switch (true) {
-        case !!cssNamesParsed[selector.toString()]:
-          if (typeof cssNamesParsed[selector.toString()] === "string") {
+        case !!this.cssNamesParsed[selector.toString()]:
+          if (typeof this.cssNamesParsed[selector.toString()] === "string") {
             befStringed += `${specify}{${
-              cssNamesParsed[selector.toString()]
+              this.cssNamesParsed[selector.toString()]
             }:${value};}`;
           } else {
             befStringed += `${specify}{${
-              cssNamesParsed[selector.toString()][0]
-            }:${value};${cssNamesParsed[selector.toString()][1]}:${value};}`;
+              this.cssNamesParsed[selector.toString()][0]
+            }:${value};${
+              this.cssNamesParsed[selector.toString()][1]
+            }:${value};}`;
           }
           break;
         case befSplited[1].startsWith("link"):
-          befStringed += ` a${specify}{color:${value} !important;}`;
+          befStringed += ` a${specify}{color:${value};}`;
           break;
         case befSplited[1] === "btn":
           befStringed += `{
                     background-color:${value};
                     border-color:${value};}
-                  ${separator}.${bef}:hover{background-color:${shadeTintColor(
-            HexToRGB(value),
+                  ${
+                    this.separator
+                  }.${bef}:hover{background-color:rgba(${this.shadeTintColor(
+            this.colorToRGB(value),
             -15
-          )};border-color:${shadeTintColor(HexToRGB(value), -20)};}
-                  ${separator}.btn-check:focus + .${bef}, .${bef}:focus{background-color:${shadeTintColor(
-            HexToRGB(value),
-            -15
-          )};border-color:${shadeTintColor(HexToRGB(value), -20)};}
-                  ${separator}.btn-check:checked + .${bef}, .btn-check:active + .${bef}, .${bef}:active, .${bef}.active, .show > .${bef}.dropdown-toggle{background-color:${shadeTintColor(
-            HexToRGB(value),
+          ).toString()});border-color:rgba(${this.shadeTintColor(
+            this.colorToRGB(value),
             -20
-          )};border-color:${shadeTintColor(
-            HexToRGB(value),
+          ).toString()});}
+                  ${
+                    this.separator
+                  }.btn-check:focus + .${bef}, .${bef}:focus{background-color:rgba(${this.shadeTintColor(
+            this.colorToRGB(value),
+            -15
+          ).toString()});border-color:rgba(${this.shadeTintColor(
+            this.colorToRGB(value),
+            -20
+          ).toString()});}
+                  ${
+                    this.separator
+                  }.btn-check:checked + .${bef}, .btn-check:active + .${bef}, .${bef}:active, .${bef}.active, .show > .${bef}.dropdown-toggle{background-color:${this.shadeTintColor(
+            this.colorToRGB(value),
+            -20
+          )};border-color:rgba(${this.shadeTintColor(
+            this.colorToRGB(value),
             -25
-          )};box-shadow: 0 0 0 0.25rem
-                  rgba(${HexToRGB(shadeTintColor(HexToRGB(value), 3))}, 0.5)
+          ).toString()});box-shadow: 0 0 0 0.25rem
+                  rgba(${this.shadeTintColor(
+                    this.colorToRGB(value),
+                    3
+                  ).toString()}, 0.5)
                   ;}
-                  ${separator}.btn-check:checked + .btn-check:focus, .btn-check:active + .${bef}:focus, .${bef}:active:focus, .${bef}.active:focus, .show > .${bef}.dropdown-toggle:focus{box-shadow: 0 0 0 0.25rem
-                    rgba(${HexToRGB(shadeTintColor(HexToRGB(value), 3))}, 0.5)
+                  ${
+                    this.separator
+                  }.btn-check:checked + .btn-check:focus, .btn-check:active + .${bef}:focus, .${bef}:active:focus, .${bef}.active:focus, .show > .${bef}.dropdown-toggle:focus{box-shadow: 0 0 0 0.25rem
+                    rgba(${this.shadeTintColor(
+                      this.colorToRGB(value),
+                      3
+                    ).toString()}, 0.5)
                   ;}`;
           break;
         case befSplited[1] === "btnOutline":
@@ -912,37 +922,63 @@ async function doCssCreate(updateBefs = null) {
                     color:${value};
                     background-color:${secondValue ? secondValue : "default"};
                       border-color:${value};}
-                    ${separator}.${bef}:hover{
+                    ${this.separator}.${bef}:hover{
                       background-color:${value};
                       color:${secondValue ? secondValue : "default"};
-                      border-color:${shadeTintColor(HexToRGB(value), -20)};}
-                    ${separator}.btn-check:focus + .${bef}, .${bef}:focus{
-                      border-color:${shadeTintColor(HexToRGB(value), -20)};}
-                    ${separator}.btn-check:checked + .${bef}, .btn-check:active + .${bef}, .${bef}:active, .${bef}.active, .show > .${bef}.dropdown-toggle{
-                      border-color:${shadeTintColor(HexToRGB(value), -25)};
+                      border-color:rgba(${this.shadeTintColor(
+                        this.colorToRGB(value),
+                        -20
+                      ).toString()});}
+                    ${this.separator}.btn-check:focus + .${bef}, .${bef}:focus{
+                      border-color:rgba(${this.shadeTintColor(
+                        this.colorToRGB(value),
+                        -20
+                      ).toString()});}
+                    ${
+                      this.separator
+                    }.btn-check:checked + .${bef}, .btn-check:active + .${bef}, .${bef}:active, .${bef}.active, .show > .${bef}.dropdown-toggle{
+                      border-color:rgba(${this.shadeTintColor(
+                        this.colorToRGB(value),
+                        -25
+                      ).toString()});
                     box-shadow: 0 0 0 0.25rem
-                    rgba(${HexToRGB(shadeTintColor(HexToRGB(value), 3))}, 0.5)
+                    rgba(${this.shadeTintColor(
+                      this.colorToRGB(value),
+                      3
+                    ).toString()}, 0.5)
                     ;}
-                    ${separator}.btn-check:checked + .btn-check:focus, .btn-check:active + .${bef}:focus, .${bef}:active:focus, .${bef}.active:focus, .show > .${bef}.dropdown-toggle:focus{
+                    ${
+                      this.separator
+                    }.btn-check:checked + .btn-check:focus, .btn-check:active + .${bef}:focus, .${bef}:active:focus, .${bef}.active:focus, .show > .${bef}.dropdown-toggle:focus{
                       box-shadow: 0 0 0 0.25rem
-                      rgba(${HexToRGB(shadeTintColor(HexToRGB(value), 3))}, 0.5)
+                      rgba(${this.shadeTintColor(
+                        this.colorToRGB(value),
+                        3
+                      ).toString()}, 0.5)
                     ;}`;
           break;
         default:
-          befStringed += `${specify}{${camelToCSSValid(selector)}:${value};}`;
+          befStringed += `${specify}{${this.camelToCSSValid(
+            selector
+          )}:${value};}`;
           break;
       }
-      for (let cssProperty of befStringed.split(";")) {
-        if (!cssProperty.includes("!important") && cssProperty.length > 5) {
-          befStringed = befStringed.replace(
-            cssProperty,
-            cssProperty + " !important"
-          );
+      if (!!this.importantActive) {
+        for (let cssProperty of befStringed.split(";")) {
+          if (!cssProperty.includes("!important") && cssProperty.length > 5) {
+            befStringed = befStringed.replace(
+              cssProperty,
+              cssProperty + " !important"
+            );
+          }
         }
       }
       if (befStringed.includes("{") && befStringed.includes("}")) {
         if (hasBP === true) {
-          befStringed = befStringed.replace(new RegExp(separator, "g"), "");
+          befStringed = befStringed.replace(
+            new RegExp(this.separator, "g"),
+            ""
+          );
           bpsStringed = bpsStringed.map((b) => {
             if (befSplited[2] === b.bp) {
               b.bef += befStringed;
@@ -950,48 +986,61 @@ async function doCssCreate(updateBefs = null) {
             return b;
           });
         } else {
-          befsStringed += befStringed + separator;
+          befsStringed += befStringed + this.separator;
         }
       }
     }
     if (befsStringed !== "") {
-      consoleLog(
+      this.consoleLog(
         "info",
-        {
-          befsStringed: befsStringed,
-        },
-        styleConsole
+        { befsStringed: befsStringed },
+        this.styleConsole
       );
-      for (let bef of befsStringed.split(separator)) {
+      for (let bef of befsStringed.split(this.separator)) {
         if (bef !== "") {
-          createCSSRules(bef);
+          this.createCSSRules(bef);
         }
       }
     }
-    bpsStringed.forEach((b) => {
-      if (b.bef !== "") {
-        consoleLog(
-          "info",
-          {
-            bp: b.bp,
-            value: b.value,
-            bef: b.bef,
-          },
-          styleConsole
+    bpsStringed = bpsStringed
+      .sort((b1, b2) => {
+        return (
+          parseInt(b1.value.replace("px", "")) -
+          parseInt(b2.value.replace("px", ""))
         );
-        createCSSRules(
-          `@media only screen and (min-width: ${b.value}) {html body ${b.bef}}`
+      })
+      .reverse();
+    bpsStringed.forEach((b, i) => {
+      if (b.bef !== "") {
+        this.consoleLog(
+          "info",
+          { bp: b.bp, value: b.value, bef: b.bef },
+          this.styleConsole
+        );
+        this.createCSSRules(
+          `@media only screen and (min-width: ${b.value}) ${
+            bpsStringed.length > 1 && i !== 0
+              ? `and (max-width: ${bpsStringed[i - 1].value})`
+              : ""
+          } { html body ${b.bef}}`
+        );
+        this.createCSSRules(
+          `@media only screen and (min-width: ${b.value}) ${
+            bpsStringed.length > 1 && i !== 0
+              ? `and (max-width: ${bpsStringed[i - 1].value})`
+              : ""
+          } { #bef-bp ${b.bef}}`
         );
         b.bef = "";
       }
     });
     const endTimeCSSCreate = performance.now();
-    consoleLog(
+    this.consoleLog(
       "info",
       `Call to cssCreate() took ${
         endTimeCSSCreate - startTimeCSSCreate
       } milliseconds`,
-      styleConsole
+      this.styleConsole
     );
     let befTimer = document.getElementById("befTimer");
     if (befTimer) {
@@ -1004,13 +1053,7 @@ async function doCssCreate(updateBefs = null) {
             `;
     }
   } catch (err) {
-    consoleLog(
-      "error",
-      {
-        err: err,
-      },
-      styleConsole
-    );
+    this.consoleLog("error", { err: err }, this.styleConsole);
   }
 }
 function createCSSRules(rule) {
@@ -1154,55 +1197,204 @@ function createCSSRules(rule) {
     );
   }
 }
-function HexToRGB(Hex) {
+function colorToRGB(color) {
   let rgb = [];
-  if (Hex.includes("rgb") || Hex.includes("rgba")) {
-    rgb = Hex.split("(")[1].split(",")[4]
-      ? [
-          parseInt(Hex.split("(")[1].split(",")[0]),
-          parseInt(Hex.split("(")[1].split(",")[1]),
-          parseInt(Hex.split("(")[1].split(",")[2]),
-          parseInt(Hex.split("(")[1].split(",")[3]),
-        ]
-      : [
-          parseInt(Hex.split("(")[1].split(",")[0]),
-          parseInt(Hex.split("(")[1].split(",")[1]),
-          parseInt(Hex.split("(")[1].split(",")[2]),
-        ];
-  } else {
-    const hexCode = Hex.replace("#", "");
-    const hexCodeLength = hexCode.length;
-    if (hexCodeLength === 3) {
-      rgb.push(
-        parseInt(hexCode.charAt(0) + hexCode.charAt(0), 16),
-        parseInt(hexCode.charAt(1) + hexCode.charAt(1), 16),
-        parseInt(hexCode.charAt(2) + hexCode.charAt(2), 16)
-      );
-    } else if (hexCodeLength === 4) {
-      rgb.push(
-        parseInt(hexCode.charAt(0) + hexCode.charAt(0), 16),
-        parseInt(hexCode.charAt(1) + hexCode.charAt(1), 16),
-        parseInt(hexCode.charAt(2) + hexCode.charAt(2), 16),
-        parseInt(hexCode.charAt(3) + hexCode.charAt(3), 16)
-      );
-    } else if (hexCodeLength === 6) {
-      rgb.push(
-        parseInt(hexCode.charAt(0) + hexCode.charAt(1), 16),
-        parseInt(hexCode.charAt(2) + hexCode.charAt(3), 16),
-        parseInt(hexCode.charAt(4) + hexCode.charAt(5), 16)
-      );
-    } else if (hexCodeLength === 8) {
-      rgb.push(
-        parseInt(hexCode.charAt(0) + hexCode.charAt(1), 16),
-        parseInt(hexCode.charAt(2) + hexCode.charAt(3), 16),
-        parseInt(hexCode.charAt(4) + hexCode.charAt(5), 16),
-        parseInt(hexCode.charAt(6) + hexCode.charAt(7), 16)
-      );
-    } else {
-      console.error("Invalid hex code");
-    }
+  color = color.toLowerCase();
+  switch (true) {
+    case !!this.colors[color]:
+      rgb = this.colorToRGB(this.colors[color]);
+      break;
+    case color.includes("rgb") || color.includes("rgba"):
+      rgb = this.parseRGB(color);
+      break;
+    case color.includes("#"):
+      rgb = this.parseRGB(this.HexToRGB(color));
+      break;
+    case color.includes("hsl"):
+      rgb = this.parseRGB(this.HSLToRGB(color));
+      break;
+    case color.includes("hwb"):
+      rgb = this.parseRGB(this.HWBToRGB(color));
+      break;
+    default:
+      rgb = [255, 0, 0];
+      break;
   }
   return rgb;
+}
+function RGBToRGBA(rgb, alpha) {
+  return `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha})`;
+}
+function parseRGB(rgba) {
+  let rgb = [];
+  if (rgba.includes("rgb") || rgba.includes("rgba")) {
+    rgb = rgba.split("(")[1].split(",")[4]
+      ? [
+          parseInt(rgba.split("(")[1].split(",")[0]),
+          parseInt(rgba.split("(")[1].split(",")[1]),
+          parseInt(rgba.split("(")[1].split(",")[2]),
+          parseInt(rgba.split("(")[1].split(",")[3]),
+        ]
+      : [
+          parseInt(rgba.split("(")[1].split(",")[0]),
+          parseInt(rgba.split("(")[1].split(",")[1]),
+          parseInt(rgba.split("(")[1].split(",")[2]),
+        ];
+  }
+  return rgb;
+}
+function HexToRGB(Hex) {
+  let rgb = [];
+  const hexCode = Hex.replace("#", "");
+  const hexCodeLength = hexCode.length;
+  if (hexCodeLength === 3) {
+    rgb.push(
+      parseInt(hexCode.charAt(0) + hexCode.charAt(0), 16),
+      parseInt(hexCode.charAt(1) + hexCode.charAt(1), 16),
+      parseInt(hexCode.charAt(2) + hexCode.charAt(2), 16)
+    );
+  } else if (hexCodeLength === 4) {
+    rgb.push(
+      parseInt(hexCode.charAt(0) + hexCode.charAt(0), 16),
+      parseInt(hexCode.charAt(1) + hexCode.charAt(1), 16),
+      parseInt(hexCode.charAt(2) + hexCode.charAt(2), 16),
+      parseInt(hexCode.charAt(3) + hexCode.charAt(3), 16)
+    );
+  } else if (hexCodeLength === 6) {
+    rgb.push(
+      parseInt(hexCode.charAt(0) + hexCode.charAt(1), 16),
+      parseInt(hexCode.charAt(2) + hexCode.charAt(3), 16),
+      parseInt(hexCode.charAt(4) + hexCode.charAt(5), 16)
+    );
+  } else if (hexCodeLength === 8) {
+    rgb.push(
+      parseInt(hexCode.charAt(0) + hexCode.charAt(1), 16),
+      parseInt(hexCode.charAt(2) + hexCode.charAt(3), 16),
+      parseInt(hexCode.charAt(4) + hexCode.charAt(5), 16),
+      parseInt(hexCode.charAt(6) + hexCode.charAt(7), 16)
+    );
+  } else {
+    this.consoleLog(
+      "error",
+      { hexToRGBError: "Invalid hex code" },
+      this.styleConsole
+    );
+  }
+  return `rgb${![3, 6].includes(hexCodeLength) ? "a" : ""}(${rgb.join(",")})`;
+}
+function HSLToRGB(HSL) {
+  /* Convert hsl to rgb please */
+  if (!["hsl", "hsla"].includes(HSL)) {
+    return "rgb(255,0,0,1)";
+  }
+  /* Separate string by comas and eliminate rgb or rgba */
+  const rgbSplited = HSL.split("(")[1]
+    .split(")")[0]
+    .split(",")
+    .filter((r) => r !== "hsl" && r !== "hsla");
+
+  const hDecimal = parseInt(rgbSplited[0]) / 100;
+  const sDecimal = parseInt(rgbSplited[1]) / 100;
+  const lDecimal = parseInt(rgbSplited[2]) / 100;
+
+  if (parseInt(rgbSplited[1]) === 0) {
+    return `rgb(${lDecimal},${lDecimal},${lDecimal})`;
+  }
+  let q =
+    lDecimal < 0.5
+      ? lDecimal * (1 + sDecimal)
+      : lDecimal + sDecimal - lDecimal * sDecimal;
+  let p = 2 * lDecimal - q;
+  const r = this.HueToRGB(p, q, hDecimal + 1 / 3);
+  const g = this.HueToRGB(p, q, hDecimal);
+  const b = this.HueToRGB(p, q, hDecimal - 1 / 3);
+  return `rgb${
+    rgbSplited[3] && rgbSplited[3] !== "" ? "a" : ""
+  }(${r},${g},${b}${
+    rgbSplited[3] && rgbSplited[3] !== "" ? `,${rgbSplited[3]}` : ""
+  })`;
+}
+function HueToRGB(p, q, t) {
+  if (t < 0) t += 1;
+  if (t > 1) t -= 1;
+  if (t < 1 / 6) return p + (q - p) * 6 * t;
+  if (t < 1 / 2) return q;
+  if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+  return p;
+}
+function HWBToRGB(HWB) {
+  const rgbSplited = HWB.split("(")[1]
+    .split(")")[0]
+    .split(",")
+    .filter((r) => r !== "hsl" && r !== "hsla");
+  let h = parseInt(rgbSplited[0]) / 360;
+  let wh = parseInt(rgbSplited[1]) / 100;
+  let bl = parseInt(rgbSplited[2]) / 100;
+  let ratio = wh + bl;
+  let i;
+  let v;
+  let f;
+  let n;
+
+  // wh + bl cant be > 1
+  if (ratio > 1) {
+    wh /= ratio;
+    bl /= ratio;
+  }
+
+  i = Math.floor(6 * h);
+  v = 1 - bl;
+  f = 6 * h - i;
+
+  if ((i & 0x01) !== 0) {
+    f = 1 - f;
+  }
+
+  n = wh + f * (v - wh); // linear interpolation
+
+  let r;
+  let g;
+  let b;
+  switch (i) {
+    default:
+    case 6:
+    case 0:
+      r = v;
+      g = n;
+      b = wh;
+      break;
+    case 1:
+      r = n;
+      g = v;
+      b = wh;
+      break;
+    case 2:
+      r = wh;
+      g = v;
+      b = n;
+      break;
+    case 3:
+      r = wh;
+      g = n;
+      b = v;
+      break;
+    case 4:
+      r = n;
+      g = wh;
+      b = v;
+      break;
+    case 5:
+      r = v;
+      g = wh;
+      b = n;
+      break;
+  }
+
+  return `rgb${rgbSplited[3] && rgbSplited[3] !== "" ? "a" : ""}(${Math.round(
+    r * 255
+  )},${Math.round(g * 255)},${Math.round(b * 255)}${
+    rgbSplited[3] && rgbSplited[3] !== "" ? `,${rgbSplited[3]}` : ""
+  })`;
 }
 function shadeTintColor(rgb, percent) {
   let R =
@@ -1229,15 +1421,16 @@ function shadeTintColor(rgb, percent) {
   R = R > 255 ? 255 : R < 0 ? 0 : R;
   G = G > 255 ? 255 : G < 0 ? 0 : G;
   B = B > 255 ? 255 : B < 0 ? 0 : B;
-  let RR = R.toString(16).length == 1 ? "0" + R.toString(16) : R.toString(16);
-  let GG = G.toString(16).length == 1 ? "0" + G.toString(16) : G.toString(16);
-  let BB = B.toString(16).length == 1 ? "0" + B.toString(16) : B.toString(16);
+  /* let RR = R.toString(16).length == 1 ? '0' + R.toString(16) : R.toString(16);
+    let GG = G.toString(16).length == 1 ? '0' + G.toString(16) : G.toString(16);
+    let BB = B.toString(16).length == 1 ? '0' + B.toString(16) : B.toString(16); */
   if (rgb[3]) {
     let A = rgb[3] ? (rgb[3] * 255).toString(16) : "FF";
-    let AA = A.toString(16).length == 1 ? "0" + A.toString(16) : A.toString(16);
-    return "#" + RR + GG + BB + AA;
+    /* let AA =
+        A.toString(16).length == 1 ? '0' + A.toString(16) : A.toString(16); */
+    return [R, G, B, A];
   } else {
-    return "#" + RR + GG + BB;
+    return [R, G, B, 1];
   }
 }
 function removePseudos(thing, remove = false) {
@@ -1679,6 +1872,10 @@ function clearAllColors() {
     },
     styleConsole
   );
+}
+function changeImportantActive() {
+  this.importantActive = !this.importantActive;
+  this.cssCreate();
 }
 /* Debuging */
 function changeDebugOption() {
