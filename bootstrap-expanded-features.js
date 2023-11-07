@@ -1019,12 +1019,15 @@ async function doCssCreate(updateBefs = null) {
           this.styleConsole
         );
         this.createCSSRules(
-          `@media only screen and (min-width: ${b.value}) ${
+          `@media only screen and (min-width: ${b.value}) { html body ${b.bef}}`
+        );
+        /* 
+          ${
             bpsStringed.length > 1 && i !== 0
               ? `and (max-width: ${bpsStringed[i - 1].value})`
               : ""
-          } { html body ${b.bef}}`
-        );
+          }
+        */
         this.createCSSRules(
           `@media only screen and (min-width: ${b.value}) ${
             bpsStringed.length > 1 && i !== 0
