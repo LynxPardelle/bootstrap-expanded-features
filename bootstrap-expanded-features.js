@@ -309,28 +309,40 @@ let styleConsole = `padding: 0.25rem 0.125rem; background-color: ${colors["mysti
 /* Pseudos */
 const pseudoClasses = [
   "Active",
+  "AnyLink",
+  "Autofill",
+  "Blank",
   "Checked",
+  "Current",
   "Default",
+  "Defined",
   "Dir",
   "Disabled",
   "Empty",
   "Enabled",
+  "First",
   "FirstChild",
   "FirstOfType",
-  "First",
-  "Fullscreen",
+  "Focus",
   "FocusVisible",
   "FocusWithin",
-  "Focus",
+  "Fullscreen",
+  "Future",
+  "Has",
+  "Host",
   "Hover",
-  "Indeterminate",
   "InRange",
+  "Indeterminate",
   "Invalid",
+  "Is",
   "Lang",
   "LastChild",
   "LastOfType",
   "Left",
   "Link",
+  "LocalLink",
+  "Modal",
+  "Muted",
   "Not",
   "NthChild",
   "NthLastChild",
@@ -340,27 +352,67 @@ const pseudoClasses = [
   "OnlyOfType",
   "Optional",
   "OutOfRange",
+  "Past",
+  "Paused",
+  "PictureInPicture",
+  "PlaceHolderShown",
+  "Playing",
+  "PopoverOpen",
   "ReadOnly",
   "ReadWrite",
   "Required",
   "Right",
   "Root",
   "Scope",
+  "Seeking",
+  "Stalled",
   "Target",
+  "TargetWithin",
+  "UserInvalid",
+  "UserValid",
   "Valid",
   "Visited",
+  "VolumeLocked",
+  "Where",
+];
+const pseudosHasSDED = [
+  "Dir",
+  "Not",
+  "Lang",
+  "Has",
+  "Host",
+  "Is",
+  "NthChild",
+  "NthLastChild",
+  "NthLastOfType",
+  "NthOfType",
+  "Part",
+  "Slotted",
+  "Where",
 ];
 const pseudoElements = [
   "After",
+  "Backdrop",
   "Before",
+  "Cue",
+  "CueRegion",
+  "FileSelectorButton",
   "FirstLetter",
   "FirstLine",
-  "Selection",
-  "Backdrop",
-  "Placeholder",
-  "Marker",
-  "SpellingError",
   "GrammarError",
+  "Highlight",
+  "Marker",
+  "Part",
+  "Placeholder",
+  "Selection",
+  "Slotted",
+  "SpellingError",
+  "TargetText",
+  "ViewTransition",
+  "ViewTransitionGroup",
+  "ViewTransitionImagePair",
+  "ViewTransitionNew",
+  "ViewTransitionOld",
 ];
 const pseudos = pseudoClasses
   .sort((e1, e2) => {
@@ -1448,10 +1500,29 @@ function removePseudos(thing, remove = false) {
   });
   pseudoFiltereds.forEach((pse) => {
     let regMask = new RegExp(":*" + pse.mask, "gi");
+    switch (true) {
+      case this.pseudosHasSDED.includes(pse.mask):
+        regMask = new RegExp(":*" + pse.mask + "(", "gi");
+        break;
+      case ["Right", "Left"].includes(pse.mask):
+        regMask = new RegExp("page" + pse.mask, "gi");
+        break;
+      default:
+        break;
+    }
     thing = thing
       .replace("SD", "(")
       .replace("ED", ")")
-      .replace(regMask, !remove ? pse.real : "");
+      .replace(
+        regMask,
+        !remove
+          ? this.pseudosHasSDED.includes(pse.mask)
+            ? pse.real + "("
+            : ["Right", "Left"].includes(pse.mask)
+            ? "page" + pse.real
+            : pse.real
+          : ""
+      );
   });
   return thing;
 }
