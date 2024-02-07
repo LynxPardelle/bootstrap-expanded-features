@@ -1,0 +1,33 @@
+{
+  "name": "bootstrap-expanded-features",
+  "version": "1.2.0",
+  "description": "Too many new features for bootstrap made with javascript for better performance and more options without a large css file.",
+  "main": "./src/index.ts",
+  "scripts": {
+    "build": "webpack --mode production",
+    "nodemon-watch": "nodemon --watch src --exec \"npm run build\"",
+    "webpack-watch": "webpack --mode production --watch --config webpack.config.js",
+    "start-dev": "start cmd /k npm run nodemon-watch && start cmd /k npm run webpack-watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "css",
+    "js",
+    "bootstrap",
+    "bootstrap-expanded-features"
+  ],
+  "author": "lynx-pardelle (https://lynxpardelle.com/)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LynxPardelle/bootstrap-expanded-features"
+  },
+  "homepage": "https://ngx-bootstrap-expanded-features.vercel.app/",
+  "devDependencies": {
+    "nodemon": "^3.0.3",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
+    "webpack": "^5.90.1",
+    "webpack-cli": "^5.1.4"
+  }
+}
