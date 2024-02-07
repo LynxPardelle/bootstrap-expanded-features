@@ -1,5 +1,4 @@
 import { ValuesSingleton } from "../../../singletons/valuesSingleton";
-import { console_log } from "../../../functions/console_log";
 import { comboParser } from "./comboParser";
 const values: ValuesSingleton = ValuesSingleton.getInstance();
 export const getNewClasses2Create = async (
@@ -11,14 +10,12 @@ export const getNewClasses2Create = async (
       let comb = Object.keys(values.combos).find((cs) => {
         return item.includes(cs);
       });
-      let combIndex = comb ? Object.keys(values.combos).indexOf(comb) : -1;
       if (!!comb && values.combos[comb]) {
         classes2Create = await comboParser(
           item,
           comb,
           value as HTMLElement,
-          classes2Create,
-          combIndex
+          classes2Create
         );
       } else if (
         !comb &&

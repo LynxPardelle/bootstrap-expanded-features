@@ -15,6 +15,8 @@ export class ValuesSingleton {
   public combos: { [key: string]: string[] } = {};
   public combosCreated: { [key: string]: string } = {};
   public encryptCombo: boolean = true;
+  public encryptComboCharacters: string = "■■■";
+  public encryptComboCreatedCharacters: string = "🜔🜔🜔";
   public cssNamesParsed: any = cssNamesParsed;
   public alreadyCreatedClasses: string[] = [];
   public sheet: any;

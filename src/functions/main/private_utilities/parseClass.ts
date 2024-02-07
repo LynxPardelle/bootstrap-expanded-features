@@ -72,6 +72,18 @@ export const parseClass = async (
     class2CreateSplited: class2CreateSplited,
   });
   // Convert the pseudos from camel case into valid pseudo and separate pseudos and combinators from the property
+  let comboCreatedKey: string | undefined = Object.keys(
+    values.combosCreated
+  ).find((cC) => {
+    return class2Create.includes(cC);
+  });
+  if (!!comboCreatedKey) {
+    let comboKeyReg = new RegExp(comboCreatedKey, "g");
+    class2CreateSplited[1] = class2CreateSplited[1].replace(
+      comboKeyReg,
+      values.encryptComboCreatedCharacters
+    );
+  }
   let classWithPseudosConvertedAndSELSplited = convertPseudos(
     class2CreateSplited[1]
   )
@@ -96,14 +108,40 @@ export const parseClass = async (
       })
       .join("")
   );
+  if (!!comboCreatedKey) {
+    let comboKeyCypherReg = new RegExp(
+      values.encryptComboCreatedCharacters,
+      "g"
+    );
+    class2CreateSplited[1] = class2CreateSplited[1].replace(
+      comboKeyCypherReg,
+      comboCreatedKey
+    );
+    specify = specify.replace(comboKeyCypherReg, comboCreatedKey);
+    class2Create = class2Create.replace(comboKeyCypherReg, comboCreatedKey);
+    class2CreateStringed = class2CreateStringed.replace(
+      comboKeyCypherReg,
+      comboCreatedKey
+    );
+  }
   console_log.consoleLog("info", { specify: specify });
   // Decrypt the combo of the class if it has been encrypted with the encryptCombo flag
   if (!!specify && values.encryptCombo) {
+    console_log.consoleLog("info", {
+      specifyPreDecryptCombo: specify,
+      class2CreatePreDecryptCombo: class2Create,
+      class2CreateStringedPreDecryptCombo: class2CreateStringed,
+    });
     [specify, class2Create, class2CreateStringed] = await decryptCombo(
       specify,
       class2Create,
       class2CreateStringed
     );
+    console_log.consoleLog("info", {
+      specifyPostDecryptCombo: specify,
+      class2CreatePostDecryptCombo: class2Create,
+      class2CreateStringedPostDecryptCombo: class2CreateStringed,
+    });
   }
   // Getting if the class has breakPoints, the value and the second value if it has
   let [hasBP, propertyValues] = Object.values(

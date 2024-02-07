@@ -11,9 +11,11 @@ export const comboParser = async (
   class2Create: string,
   comb: string,
   class2CreateElement: HTMLElement,
-  classes2Create: string[],
-  combIndex: number
+  classes2Create: string[]
 ): Promise<string[]> => {
+  let combIndex = comb ? Object.keys(values.combos).indexOf(comb) : -1;
+  console_log.consoleLog("info", { combIndex: combIndex });
+  console_log.consoleLog("info", { class2Create: class2Create });
   let vals: string[] = await values4ComboGetter(class2Create);
   console_log.consoleLog("info", { vals: vals });
   await Promise.all(
@@ -32,20 +34,28 @@ export const comboParser = async (
         console_log.consoleLog("info", {
           alreadyABBRCombo: alreadyABBRCombo,
         });
+        let combosCreatedKeys: string[] = Object.keys(values.combosCreated);
+        let combCreatedKey: string =
+          combosCreatedKeys.find((cs) => {
+            return values.combosCreated[cs] === class2Create;
+          }) || values.encryptComboCharacters + combosCreatedKeys.length;
         if (!alreadyABBRCombo) {
-          values.combosCreated[values.encryptCombo ? "■■■" + combIndex : comb] =
-            class2Create;
+          values.combosCreated[
+            values.encryptCombo ? combCreatedKey : class2Create
+          ] = class2Create;
           console_log.consoleLog("info", {
             cStartsWithClass2Create:
               values.combosCreated[
-                values.encryptCombo ? "■■■" + combIndex : comb
+                values.encryptCombo ? combCreatedKey : class2Create
               ],
           });
         }
         console_log.consoleLog("info", {
           combosCreatedABBR: combosCreatedABBR,
         });
-        let comboABBR: string = values.encryptCombo ? "■■■" + combIndex : comb;
+        let comboABBR: string = values.encryptCombo
+          ? combCreatedKey
+          : class2Create;
         console_log.consoleLog("info", { comboABBR: comboABBR });
         console_log.consoleLog("info", { c: c });
         let pseudos = values.pseudos.filter((p: any) =>

@@ -42,6 +42,10 @@ export const doCssCreate = {
           )
         );
       }
+      console_log.consoleLog("info", {
+        classes2CreateStringed: classes2CreateStringed,
+        bpsStringed: bpsStringed,
+      });
       send2CreateRules(classes2CreateStringed, bpsStringed);
       const endTimeCSSCreate = performance.now();
       console_log.consoleLog(
