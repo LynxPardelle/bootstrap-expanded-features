@@ -12,12 +12,13 @@ export const property2ValueJoiner = async (
 ): Promise<string> => {
   switch (true) {
     case !!values.cssNamesParsed[property.toString()]:
-      if (typeof values.cssNamesParsed[property.toString()] === "string") {
+      let cssNameParsed = values.cssNamesParsed[property.toString()];
+      if (typeof cssNameParsed === "string") {
         return `${specify}{${values.cssNamesParsed[property.toString()]}:${
           propertyValues[0]
         };}`;
       } else {
-        return `${specify}{${values.cssNamesParsed[property.toString()]
+        return `${specify}{${cssNameParsed
           .map((c: any, i: number) => {
             return `${c}:${propertyValues[i] || propertyValues[0] || ""};`;
           })
