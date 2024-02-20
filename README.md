@@ -1,5 +1,3 @@
-@@ -1,48 +0,0 @@
-
 # bootstrap-expanded-features
 
 ## 📝 Table of Contents
