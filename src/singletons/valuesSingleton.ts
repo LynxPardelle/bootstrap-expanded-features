@@ -8,7 +8,7 @@ import { IAbreviationTraductor, IBPS, IPseudo } from "../interfaces";
 import { css_camel } from "../functions/css-camel";
 export class ValuesSingleton {
   private static instance: ValuesSingleton;
-  public indicatorClass: string = "ank";
+  public indicatorClass: string = "bef";
   public colors: { [key: string]: string } = allColors;
   public abreviationsClasses: { [key: string]: string } = {};
   public abreviationsValues: { [key: string]: string } = {};
@@ -56,7 +56,7 @@ export class ValuesSingleton {
     "#" + this.indicatorClass + "-bp",
   ];
   public limitBPS: boolean = false;
-  public styleSheetToManage: string = "angora-styles";
+  public styleSheetToManage: string = "bef-styles";
   public separator: string = "þµÞ";
   public specify: string = "🜏🜏🜏";
   /* Console */
@@ -342,12 +342,16 @@ export class ValuesSingleton {
       traductionRegExp: /;/g,
     },
   ];
-  /* Time Management*/
+  /* Time Management */
   public lastCSSCreate: number = Date.now();
   public lastTimeAsked2Create: number = new Date().getTime();
   public timesCSSCreated: number = 0;
-  public timeBetweenReCreate: number = 300;
-  public useTimer: boolean = true;
+  public timeBetweenReCreate: number = 1000;
+  public useTimer: boolean = false;
+  /* Recurrent Strategy */
+  public useRecurrentStrategy: boolean = true;
+  public lastTimeCssCreateEnded: number = Date.now();
+  public cssCreateIsActive: boolean = false;
   private constructor() {}
 
   public static getInstance(): ValuesSingleton {

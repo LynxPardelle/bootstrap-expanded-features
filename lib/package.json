@@ -1,6 +1,6 @@
 {
   "name": "bootstrap-expanded-features",
-  "version": "1.4.3",
+  "version": "1.4.4-latest",
   "description": "Too many new features for bootstrap made with javascript for better performance and more options without a large css file.",
   "main": "bootstrap-expanded-features.js",
   "scripts": {
@@ -16,7 +16,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/LynxPardelle/bootstrap-expanded-features"
+    "url": "git+https://github.com/LynxPardelle/bootstrap-expanded-features.git"
   },
   "homepage": "https://lynx-bef.vercel.app/"
 }

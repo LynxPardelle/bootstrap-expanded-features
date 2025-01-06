@@ -1,6 +1,6 @@
 {
   "name": "bootstrap-expanded-features",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "Too many new features for bootstrap made with javascript for better performance and more options without a large css file.",
   "main": "./src/index.ts",
   "scripts": {
@@ -25,9 +25,11 @@
   "homepage": "https://lynx-bef.vercel.app/",
   "devDependencies": {
     "nodemon": "^3.0.3",
+    "terser-webpack-plugin": "^5.3.11",
     "ts-loader": "^9.5.1",
     "typescript": "^5.3.3",
-    "webpack": "^5.90.1",
-    "webpack-cli": "^5.1.4"
+    "webpack": "^5.97.1",
+    "webpack-cli": "^5.1.4",
+    "wrapper-webpack-plugin": "^2.2.2"
   }
 }
