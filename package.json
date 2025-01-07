@@ -1,6 +1,6 @@
 {
   "name": "bootstrap-expanded-features",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "Too many new features for bootstrap made with javascript for better performance and more options without a large css file.",
   "main": "./src/index.ts",
   "scripts": {
