@@ -24,7 +24,7 @@
   },
   "homepage": "https://lynx-bef.vercel.app/",
   "devDependencies": {
-    "nodemon": "^3.1.9",
+    "nodemon": "^3.1.10",
     "terser-webpack-plugin": "^5.3.14",
     "ts-loader": "^9.5.2",
     "typescript": "^5.8.3",
